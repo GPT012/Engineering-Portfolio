@@ -13,7 +13,9 @@ const DEFAULT_CONFIG = {
 
 // === TRANSLATION CACHE (LRU) ===
 const CACHE_MAX_SIZE = 200;
-const translationCache = new Map(); // key: `${sl}:${tl}:${text}` → translation
+const translationCache = new Map(); // key: `${sl}:${tl}:${text}` → { translation, detectedLang }
+
+// Initialized from config on first use
 
 function getCacheKey(text, targetLang, sourceLang) {
     return `${sourceLang}:${targetLang}:${text.trim().toLowerCase()}`;
@@ -62,7 +64,7 @@ async function translateText(text, targetLang = 'en', sourceLang = 'auto') {
 
     // 1. Check cache
     const cached = getCached(trimmed, targetLang, sourceLang);
-    if (cached) return { translation: cached };
+    if (cached) return cached;
 
     // 2. Check for pending identical request (dedup)
     const dedupeKey = getCacheKey(trimmed, targetLang, sourceLang);
@@ -83,6 +85,8 @@ async function translateText(text, targetLang = 'en', sourceLang = 'auto') {
 
             const data = await response.json();
             let translation = '';
+            let detectedLang = data?.[2] || null;
+
             if (data?.[0]) {
                 for (const part of data[0]) {
                     if (part?.[0]) translation += part[0];
@@ -91,8 +95,9 @@ async function translateText(text, targetLang = 'en', sourceLang = 'auto') {
 
             const result = translation.trim();
             if (result.length > 0) {
-                setCache(trimmed, targetLang, sourceLang, result);
-                return { translation: result };
+                const returnObj = { translation: result, detectedLang };
+                setCache(trimmed, targetLang, sourceLang, returnObj);
+                return returnObj;
             }
             return { error: 'No translation received' };
         } catch (error) {
@@ -137,9 +142,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case 'translate':
             getConfig().then(config => {
-                const target = request.targetLang || config.targetLang;
-                translateText(request.text, target, config.sourceLang)
-                    .then(result => sendResponse(result));
+                const myLang = request.targetLang || config.targetLang;
+                const sourceLang = request.sourceLang || config.sourceLang || 'auto';
+                translateText(request.text, myLang, sourceLang)
+                    .then(result => {
+                        sendResponse(result);
+                    });
             });
             return true;
 

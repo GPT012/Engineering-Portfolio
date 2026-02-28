@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ConFluent E2E Platform Simulators</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            background: #e5e5e5;
+        }
+
+        .platform {
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* WhatsApp Input Simulator */
+        #wa-editor {
+            min-height: 40px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #111b21;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            outline: none;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            user-select: text;
+            cursor: text;
+        }
+
+        #wa-editor::before {
+            content: "";
+            display: block;
+            position: absolute;
+        }
+
+        /* Messenger Input Simulator (Draft.js style nesting) */
+        .messenger-wrap {
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 8px 12px;
+            background: #f0f2f5;
+        }
+
+        #messenger-editor {
+            min-height: 20px;
+            outline: none;
+            border: none;
+            font-size: 15px;
+            background: transparent;
+            word-break: break-word;
+        }
+
+        /* Discord Input Simulator (Slate.js deep nesting) */
+        .discord-wrap {
+            background: #383a40;
+            padding: 10px;
+            border-radius: 8px;
+            color: #dcddde;
+            font-family: "gg sans", sans-serif;
+        }
+
+        #discord-editor {
+            outline: none;
+            min-height: 24px;
+            font-size: 16px;
+            user-select: text;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Twitter Input Simulator (Draft.js with max limits conceptually) */
+        .tw-wrap {
+            border: 1px solid #eff3f4;
+            padding: 12px;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        #twitter-editor {
+            min-height: 50px;
+            outline: none;
+            font-size: 20px;
+            letter-spacing: 0.2px;
+            font-weight: 400;
+            color: #0f1419;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🌍 Multi-Platform E2E Tests</h2>
+
+    <div class="platform">
+        <h3>💬 WhatsApp Web Simulator</h3>
+        <p>Specifics: standard contenteditable disguised as a text input, tight DOM constraints.</p>
+        <div id="wa-editor" contenteditable="true" dir="ltr" spellcheck="false" role="textbox"
+            aria-label="Type a message"></div>
+    </div>
+
+    <div class="platform">
+        <h3>🔵 Messenger Simulator</h3>
+        <p>Specifics: Draft.js style deeply nested contenteditable div.</p>
+        <div class="messenger-wrap">
+            <div dir="auto" style="position: relative;">
+                <div id="messenger-editor" contenteditable="true" aria-label="Message" role="textbox" spellcheck="true"
+                    tabindex="0"><span data-text="true"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="platform">
+        <h3>👾 Discord Simulator</h3>
+        <p>Specifics: Slate.js engine. Extremely volatile Selection API handling. Prevents standard text injection.</p>
+        <div class="discord-wrap">
+            <div id="discord-editor" data-slate-editor="true" data-slate-node="value" contenteditable="true"
+                role="textbox" aria-multiline="true" spellcheck="false" autocorrect="off">
+                <p data-slate-node="element"><span data-slate-node="text"><span data-slate-leaf="true"><span
+                                data-slate-string="true">&#xfeff;</span></span></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="platform">
+        <h3>🐦 Twitter / X Simulator</h3>
+        <p>Specifics: Draft.js with span wrappers for hashtag and mention highlight styling.</p>
+        <div class="tw-wrap">
+            <div data-testid="tweetTextarea_0" class="DraftEditor-root">
+                <div class="DraftEditor-editorContainer">
+                    <div id="twitter-editor" aria-autocomplete="list" aria-label="Post text" aria-multiline="true"
+                        role="textbox" spellcheck="true" tabIndex="0" contenteditable="true"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

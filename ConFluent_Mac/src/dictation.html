@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConFluent — Dictation</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* === DICTATION-SPECIFIC STYLES === */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dictation-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        /* === MIC SECTION === */
+        .mic-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 20px 16px;
+            flex-shrink: 0;
+        }
+
+        .mic-ring {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-app-region: no-drag;
+        }
+
+        .mic-ring-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .mic-ring.recording .mic-ring-bg {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.15), 0 0 30px rgba(239, 68, 68, 0.2);
+        }
+
+        .mic-ring.idle .mic-ring-bg {
+            border-color: var(--border);
+        }
+
+        /* Pulsing waves when recording */
+        .mic-pulse {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            opacity: 0;
+            animation: none;
+        }
+
+        .mic-pulse-2 {
+            position: absolute;
+            inset: -18px;
+            border-radius: 50%;
+            border: 2px solid rgba(239, 68, 68, 0.15);
+            opacity: 0;
+            animation: none;
+        }
+
+        .mic-ring.recording .mic-pulse {
+            animation: mic-wave 1.5s ease-out infinite;
+        }
+
+        .mic-ring.recording .mic-pulse-2 {
+            animation: mic-wave 1.5s ease-out infinite 0.5s;
+        }
+
+        @keyframes mic-wave {
+            0% {
+                opacity: 1;
+                transform: scale(0.95);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .mic-icon {
+            width: 36px;
+            height: 36px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .mic-ring.recording .mic-icon {
+            color: #ef4444;
+            transform: scale(1.1);
+        }
+
+        .mic-ring:hover .mic-icon {
+            color: var(--primary);
+        }
+
+        .mic-ring.recording:hover .mic-icon {
+            color: #ef4444;
+        }
+
+        .mic-status {
+            margin-top: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mic-status.recording {
+            color: #ef4444;
+        }
+
+        .mic-hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            opacity: 0.5;
+            margin-top: 4px;
+        }
+
+        /* === LIVE TRANSCRIPTION === */
+        .transcription-live {
+            margin: 0 20px 12px;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            min-height: 52px;
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+            word-break: break-word;
+            transition: border-color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .transcription-live.active {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.04);
+        }
+
+        .transcription-live .interim {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .transcription-live .final {
+            color: var(--text);
+        }
+
+        .transcription-placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+            opacity: 0.5;
+            font-size: 13px;
+        }
+
+        /* === DICTATION HISTORY === */
+        .history-section {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 0 20px;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .history-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .history-clear {
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all var(--transition);
+            -webkit-app-region: no-drag;
+        }
+
+        .history-clear:hover {
+            color: var(--error);
+            background: var(--error-soft);
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-bottom: 8px;
+        }
+
+        .history-empty {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-style: italic;
+            text-align: center;
+            padding: 32px 0;
+            opacity: 0.5;
+        }
+
+        .history-entry {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            animation: slideIn 0.25s ease-out;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-app-region: no-drag;
+            position: relative;
+        }
+
+        .history-entry:hover {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        .history-entry:active {
+            transform: scale(0.98);
+        }
+
+        .history-entry-text {
+            font-size: 13px;
+            color: var(--text);
+            font-weight: 500;
+            line-height: 1.5;
+            word-break: break-word;
+            padding-right: 28px;
+        }
+
+        .history-entry-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .history-entry-time {
+            font-size: 9px;
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .history-entry-duration {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-soft);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .history-entry-copied {
+            font-size: 9px;
+            color: var(--accent);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .history-entry-copied.show {
+            opacity: 1;
+        }
+
+        .history-copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: all 0.2s ease;
+            -webkit-app-region: no-drag;
+        }
+
+        .history-entry:hover .history-copy-btn {
+            opacity: 0.7;
+        }
+
+        .history-copy-btn:hover {
+            opacity: 1 !important;
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        /* === SETTINGS ROW (language) === */
+        .dictation-settings {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px 12px;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border-soft);
+        }
+
+        .dictation-settings .setting-group {
+            flex: 1;
+        }
+
+        /* === VOLUME METER === */
+        .volume-meter {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 24px;
+            margin-top: 8px;
+        }
+
+        .volume-bar {
+            width: 4px;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            transition: height 0.08s ease, background 0.15s ease;
+        }
+
+        .volume-bar.active {
+            background: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CUSTOM TITLE BAR -->
+    <div class="titlebar" id="titlebar">
+        <div class="titlebar-drag"></div>
+        <div class="titlebar-brand">
+            <svg class="titlebar-logo" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M14.5 7.5C15.8807 7.5 17 8.61929 17 10C17 11.3807 15.8807 12.5 14.5 12.5C13.1193 12.5 12 11.3807 12 10C12 8.61929 13.1193 7.5 14.5 7.5ZM9.5 7.5C10.8807 7.5 12 8.61929 12 10C12 11.3807 10.8807 12.5 9.5 12.5C8.11929 12.5 7 11.3807 7 10C7 8.61929 8.11929 7.5 9.5 7.5ZM14.5 5.5C12.756 5.5 11.129 6.275 10 7.545C8.871 6.275 7.244 5.5 5.5 5.5C2.462 5.5 0 7.962 0 11C0 14.038 2.462 16.5 5.5 16.5C7.244 16.5 8.871 15.725 10 14.455C11.129 15.725 12.756 16.5 14.5 16.5C17.538 16.5 20 14.038 20 11C20 7.962 17.538 5.5 14.5 5.5Z" />
+            </svg>
+            <span class="titlebar-name">Dictation</span>
+        </div>
+        <div class="titlebar-status" id="global-status">
+            <div class="status-dot" id="status-dot"></div>
+            <span id="status-label">Ready</span>
+        </div>
+    </div>
+
+    <div class="dictation-container">
+
+        <!-- MIC BUTTON -->
+        <div class="mic-section">
+            <div class="mic-ring idle" id="mic-ring">
+                <div class="mic-ring-bg"></div>
+                <div class="mic-pulse"></div>
+                <div class="mic-pulse-2"></div>
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="1" width="6" height="15" rx="3"></rect>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+            </div>
+
+            <!-- Volume meter -->
+            <div class="volume-meter" id="volume-meter">
+                <div class="volume-bar" data-i="0"></div>
+                <div class="volume-bar" data-i="1"></div>
+                <div class="volume-bar" data-i="2"></div>
+                <div class="volume-bar" data-i="3"></div>
+                <div class="volume-bar" data-i="4"></div>
+                <div class="volume-bar" data-i="5"></div>
+                <div class="volume-bar" data-i="6"></div>
+                <div class="volume-bar" data-i="7"></div>
+                <div class="volume-bar" data-i="8"></div>
+                <div class="volume-bar" data-i="9"></div>
+                <div class="volume-bar" data-i="10"></div>
+                <div class="volume-bar" data-i="11"></div>
+                <div class="volume-bar" data-i="12"></div>
+                <div class="volume-bar" data-i="13"></div>
+                <div class="volume-bar" data-i="14"></div>
+            </div>
+
+            <div class="mic-status" id="mic-status">Hold fn to record</div>
+            <div class="mic-hint" id="mic-hint">Release to stop — text auto-copied to clipboard</div>
+        </div>
+
+        <!-- LIVE TRANSCRIPTION -->
+        <div class="transcription-live" id="transcription-live">
+            <span class="transcription-placeholder">Transcription will appear here...</span>
+        </div>
+
+        <!-- HISTORY -->
+        <div class="history-section">
+            <div class="history-header">
+                <span class="history-label">VOICE HISTORY</span>
+                <button class="history-clear" id="clear-history-btn">Clear</button>
+            </div>
+            <div class="history-list" id="history-list">
+                <div class="history-empty">No recordings yet. Hold fn to start...</div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="dictation-settings">
+            <div class="setting-group">
+                <label for="dictLang">Speech Language</label>
+                <div class="select-wrapper">
+                    <select id="dictLang">
+                        <option value="fr-FR">Français</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="en-GB">English (UK)</option>
+                        <option value="es-ES">Español</option>
+                        <option value="de-DE">Deutsch</option>
+                        <option value="it-IT">Italiano</option>
+                        <option value="pt-BR">Português</option>
+                        <option value="ar-SA">العربية</option>
+                        <option value="ja-JP">日本語</option>
+                        <option value="zh-CN">中文</option>
+                    </select>
+                    <svg class="select-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+            <div class="settings-controls">
+                <button id="theme-toggle" class="icon-btn" title="Toggle Dark Mode">
+                    <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                    <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span class="footer-text">ConFluent Dictation</span>
+        <span class="footer-shortcut">⌘⇧D to toggle</span>
+    </div>
+
+    <script src="dictation-renderer.js"></script>
+</body>
+
+</html>

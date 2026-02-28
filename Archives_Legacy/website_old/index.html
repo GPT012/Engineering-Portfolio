@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://www.confluents.xyz/">
+    <title>ConFluent — Translate Anything, Everywhere</title>
+    <meta name="description"
+        content="ConFluent translates what you type in real-time on any website. Write in your language, send in theirs. Free Chrome extension.">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://confluents.xyz">
+    <meta property="og:title" content="ConFluent — Translate Anything, Everywhere">
+    <meta property="og:description"
+        content="Real-time translation on any website. Write in your language, send in theirs. Free forever.">
+    <meta property="og:image" content="https://confluents.xyz/favicon.png">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ConFluent — Translate Anything, Everywhere">
+    <meta name="twitter:description" content="Real-time translation on any website. Free Chrome extension.">
+    <meta name="twitter:image" content="https://confluents.xyz/favicon.png">
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet">
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
+    <style>
+        /* ===================================================
+           ConFluent — Marketing Promo Page
+           Premium dark theme with animated showcases
+           =================================================== */
+
+        :root {
+            --bg: #050a18;
+            --bg-card: #0c1426;
+            --bg-popup: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            --text: #f1f5f9;
+            --text-mid: #94a3b8;
+            --text-muted: #a1b3c7;
+            --primary: #3b82f6;
+            --primary-soft: rgba(59, 130, 246, 0.15);
+            --primary-glow: rgba(59, 130, 246, 0.4);
+            --accent: #10b981;
+            --accent-soft: rgba(16, 185, 129, 0.15);
+            --violet: #8b5cf6;
+            --violet-soft: rgba(139, 92, 246, 0.15);
+            --amber: #f59e0b;
+            --amber-soft: rgba(245, 158, 11, 0.15);
+            --rose: #f43f5e;
+            --rose-soft: rgba(244, 63, 94, 0.15);
+            --border: rgba(255, 255, 255, 0.06);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Clash Display', 'Inter', sans-serif;
+            --radius: 24px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* === REVEAL ANIMATIONS === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === BACKGROUND NOISE + GRADIENT === */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 20% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === HERO === */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.4);
+            }
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 .thin {
+            font-weight: 500;
+            color: var(--text-mid);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--violet) 50%, var(--rose) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 560px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--primary);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 99px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 24px var(--primary-glow);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px var(--primary-glow);
+        }
+
+        /* === SECTION TITLES === */
+        .section-header {
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto 56px;
+        }
+
+        .section-tag {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-top: 14px;
+            line-height: 1.7;
+        }
+
+        /* ======================================================
+           FEATURE SHOWCASE CARDS — The star of the show
+           ====================================================== */
+        .showcase {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        .showcase-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .showcase-row.reverse {
+            direction: rtl;
+        }
+
+        .showcase-row.reverse>* {
+            direction: ltr;
+        }
+
+        .showcase-text {
+            padding: 8px 0;
+        }
+
+        .showcase-text .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 16px;
+        }
+
+        .feature-badge.blue {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .feature-badge.green {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .feature-badge.violet {
+            background: var(--violet-soft);
+            color: var(--violet);
+        }
+
+        .feature-badge.amber {
+            background: var(--amber-soft);
+            color: var(--amber);
+        }
+
+        .feature-badge.rose {
+            background: var(--rose-soft);
+            color: var(--rose);
+        }
+
+        .showcase-text h3 {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .showcase-text p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .feature-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-mid);
+        }
+
+        /* === POPUP MOCKUP === */
+        .popup-mockup {
+            width: 280px;
+            margin: 0 auto;
+            background: var(--bg-popup);
+            border-radius: 20px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 24px 80px rgba(0, 0, 0, 0.5),
+                0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: perspective(800px) rotateY(-2deg) rotateX(1deg);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            color: #0f172a;
+        }
+
+        .popup-mockup:hover {
+            transform: perspective(800px) rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+
+        .popup-inner {
+            padding: 16px 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Popup header */
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .popup-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .popup-orb {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a);
+            box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.5),
+                inset 2px 2px 5px rgba(255, 255, 255, 0.05),
+                0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .popup-orb .dot-active {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid #f8fafc;
+            box-shadow: 0 0 5px #10b981;
+        }
+
+        .popup-orb svg {
+            width: 16px;
+            height: 16px;
+            color: #f8fafc;
+        }
+
+        .popup-brand-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 18px;
+            color: #0f172a;
+        }
+
+        .popup-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .popup-moon {
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        /* Toggle switch */
+        .toggle-track {
+            width: 40px;
+            height: 22px;
+            border-radius: 11px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle-track.on {
+            background: #3b82f6;
+        }
+
+        .toggle-track.off {
+            background: #e2e8f0;
+        }
+
+        .toggle-thumb {
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            transition: left 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-track.on .toggle-thumb {
+            left: 20px;
+        }
+
+        .toggle-track.off .toggle-thumb {
+            left: 2px;
+        }
+
+        /* Popup card */
+        .popup-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+            border: 1px solid #fff;
+        }
+
+        .popup-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .popup-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .popup-select {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-select .chevron {
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        /* Conversation card in popup */
+        .popup-conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .popup-conv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-conv-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font-display);
+            color: #0f172a;
+        }
+
+        .popup-conv-title .emoji {
+            font-size: 13px;
+        }
+
+        /* Flag selector */
+        .popup-flags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            padding: 2px 0;
+        }
+
+        .popup-flag {
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 2px solid transparent;
+            opacity: 0.4;
+            transition: all 0.2s;
+        }
+
+        .popup-flag.active {
+            opacity: 1;
+            transform: scale(1.12);
+            border-color: #3b82f6;
+            background: #fff;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.25);
+        }
+
+        /* === HIGHLIGHT RINGS around popup features === */
+        .highlight-ring {
+            position: relative;
+        }
+
+        .highlight-ring::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            opacity: 0;
+            animation: ring-pulse 3s infinite;
+        }
+
+        @keyframes ring-pulse {
+
+            0%,
+            70%,
+            100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+
+            30%,
+            50% {
+                opacity: 0.6;
+                transform: scale(1.02);
+            }
+        }
+
+        /* === CHAT DEMO === */
+        .chat-demo {
+            width: 320px;
+            margin: 0 auto;
+            background: #0c1426;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.06),
+                0 24px 80px rgba(0, 0, 0, 0.5);
+            transform: perspective(800px) rotateY(2deg) rotateX(1deg);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .chat-demo:hover {
+            transform: perspective(800px) rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+
+        .chat-header-bar {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .chat-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chat-platform {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            animation: fadeInBubble 0.5s ease forwards;
+        }
+
+        .chat-bubble.them {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            color: var(--text-mid);
+        }
+
+        .chat-bubble.them .translated {
+            color: var(--text);
+            font-weight: 500;
+            display: block;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px dashed rgba(59, 130, 246, 0.3);
+        }
+
+        .chat-bubble.them .translated::before {
+            content: '🇫🇷 ';
+            font-size: 11px;
+        }
+
+        .chat-bubble.me {
+            background: var(--primary);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble .original-hint {
+            font-size: 10px;
+            opacity: 0.5;
+            margin-top: 3px;
+            font-style: italic;
+        }
+
+        @keyframes fadeInBubble {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-typing-bar {
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 12px;
+            color: var(--text-mid);
+        }
+
+        .confluent-badge-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-soft);
+            padding: 3px 8px;
+            border-radius: 99px;
+            letter-spacing: 0.04em;
+        }
+
+        /* === TRIGGER MODE VISUAL === */
+        .trigger-demo {
+            width: 320px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--bg-card);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.06),
+                0 24px 80px rgba(0, 0, 0, 0.5);
+            transform: perspective(800px) rotateY(-2deg) rotateX(1deg);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .trigger-demo:hover {
+            transform: perspective(800px) rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+
+        .trigger-header {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-mid);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trigger-modes {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .trigger-mode-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .trigger-mode-item.active {
+            background: var(--primary-soft);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .trigger-mode-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .trigger-mode-icon.blue {
+            background: var(--primary-soft);
+        }
+
+        .trigger-mode-icon.amber {
+            background: var(--amber-soft);
+        }
+
+        .trigger-mode-icon.violet {
+            background: var(--violet-soft);
+        }
+
+        .trigger-mode-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .trigger-mode-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* === PLATFORMS SECTION === */
+        .platforms {
+            padding: 100px 24px;
+            text-align: center;
+        }
+
+        .platform-grid {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 48px;
+        }
+
+        .platform-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 14px 24px;
+            border-radius: 14px;
+            transition: all 0.3s;
+        }
+
+        .platform-chip:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .platform-chip .platform-icon {
+            font-size: 24px;
+        }
+
+        .platform-chip .platform-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* === FINAL CTA === */
+        .final-cta {
+            text-align: center;
+            padding: 100px 24px 120px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .final-cta h2 {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-chrome {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            color: #0f172a;
+            padding: 14px 28px;
+            border-radius: 99px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-chrome:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: transparent;
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 99px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface);
+            transform: translateY(-2px);
+        }
+
+        /* === FOOTER === */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* === RESPONSIVE === */
+        /* === NAVBAR === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 10, 24, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s;
+        }
+
+        .navbar.scrolled {
+            background: rgba(5, 10, 24, 0.95);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .nav-logo-orb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--violet));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-mid);
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 2px 12px var(--primary-glow);
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .nav-signin {
+            padding: 7px 18px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            color: var(--text) !important;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-signin:hover {
+            border-color: var(--primary);
+            background: rgba(79, 110, 247, 0.08);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px 5px 5px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-user:hover {
+            border-color: var(--primary);
+            background: rgba(79, 110, 247, 0.08);
+        }
+
+        .nav-user img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+        }
+
+        .nav-user span {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .nav-mobile {
+            display: none;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            background: rgba(5, 10, 24, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 20px 32px;
+            flex-direction: column;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+            z-index: 999;
+        }
+
+        .nav-mobile.open {
+            display: flex;
+        }
+
+        .nav-mobile a {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-mid);
+            padding: 8px 0;
+        }
+
+        /* === STATS === */
+        .stats {
+            padding: 60px 24px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 24px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-number.blue {
+            color: var(--primary);
+        }
+
+        .stat-number.green {
+            color: var(--accent);
+        }
+
+        .stat-number.violet {
+            color: var(--violet);
+        }
+
+        .stat-number.rose {
+            color: var(--rose);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* === FAQ === */
+        .faq {
+            padding: 80px 24px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            background: var(--surface-hover);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .faq-question .faq-icon {
+            font-size: 18px;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-answer p {
+            padding: 0 20px 18px;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* === EXPANDED FOOTER === */
+        .footer-main {
+            border-top: 1px solid var(--border);
+            padding: 60px 24px 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-brand-name {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .footer-brand p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 240px;
+        }
+
+        .footer-col h3 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-mid);
+            margin-bottom: 14px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .showcase-row {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .showcase-row.reverse {
+                direction: ltr;
+            }
+
+            .popup-mockup,
+            .chat-demo,
+            .trigger-demo {
+                transform: none;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .platform-grid {
+                gap: 12px;
+            }
+
+            .platform-chip {
+                padding: 10px 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+
+            .hero {
+                padding-top: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">
+            <div class="nav-logo-orb">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff">
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+            </div>
+            ConFluent
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#platforms">Platforms</a>
+            <a href="#faq">FAQ</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="dashboard.html">My Account</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="login.html" class="nav-signin" id="nav-signin-desktop">Sign In</a>
+            <div class="nav-user" id="nav-user-desktop" style="display:none;" onclick="navLogout()">
+                <img id="nav-avatar-desktop" src="" alt="">
+                <span id="nav-name-desktop"></span>
+            </div>
+            <a href="#" class="nav-cta">Add to Chrome</a>
+        </div>
+        <button class="nav-hamburger" onclick="document.getElementById('nav-mobile').classList.toggle('open')"
+            aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+        </button>
+    </nav>
+    <div class="nav-mobile" id="nav-mobile">
+        <a href="#features" onclick="this.parentElement.classList.remove('open')">Features</a>
+        <a href="#platforms" onclick="this.parentElement.classList.remove('open')">Platforms</a>
+        <a href="#faq" onclick="this.parentElement.classList.remove('open')">FAQ</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="dashboard.html">My Account</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="login.html" class="nav-signin" id="nav-signin-mobile" style="text-align:center;display:block;">Sign
+            In</a>
+        <div class="nav-user" id="nav-user-mobile" style="display:none;justify-content:center;" onclick="navLogout()">
+            <img id="nav-avatar-mobile" src="" alt="">
+            <span id="nav-name-mobile"></span>
+        </div>
+        <a href="#" class="nav-cta" style="text-align:center;display:block;">Add to Chrome</a>
+    </div>
+
+    <main class="page-wrapper">
+
+        <!-- === HERO === -->
+        <header class="hero" style="padding-top: 140px;">
+            <div class="badge reveal"><span class="dot"></span> Now on Chrome Web Store</div>
+            <h1 class="reveal"><span class="thin">Translate anything,</span><br><span
+                    class="gradient-text">everywhere.</span></h1>
+            <p class="hero-sub reveal">ConFluent translates what you type in real-time on any website. Discord,
+                WhatsApp, Slack — write in your language, send in theirs.</p>
+            <a href="#" class="hero-cta reveal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"></polygon>
+                </svg>
+                Add to Chrome — Free
+            </a>
+            <p class="reveal" style="margin-top: 16px; font-size: 12px; color: var(--text-muted);">✓ Free forever
+                &nbsp;·&nbsp; ✓ Zero data collected &nbsp;·&nbsp; ✓ No account required</p>
+        </header>
+
+        <!-- === STATS === -->
+        <section class="stats reveal">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number blue">10+</div>
+                    <div class="stat-label">Languages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number green">∞</div>
+                    <div class="stat-label">Websites Supported</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number violet">100%</div>
+                    <div class="stat-label">Free & Private</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number rose">0</div>
+                    <div class="stat-label">Data Collected</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === FEATURE 1: REAL-TIME TRANSLATION === -->
+        <section class="showcase" id="features">
+            <div class="section-header reveal">
+                <p class="section-tag">Features</p>
+                <h2 class="section-title">Everything you need to <span class="gradient-text">communicate freely.</span>
+                </h2>
+                <p class="section-desc">A clean, minimalist extension packed with powerful translation features.</p>
+            </div>
+
+            <!-- ROW 1: Main popup + language selection -->
+            <div class="showcase-row reveal">
+                <div class="showcase-text">
+                    <div class="feature-badge blue">⚡ Core</div>
+                    <h3>Real-Time Translation</h3>
+                    <p>Type in your own language — ConFluent automatically translates your text before you send it. No
+                        copy-paste, no extra tabs. Just type and go.</p>
+                    <div class="feature-pills">
+                        <span class="pill">10+ languages</span>
+                        <span class="pill">Auto-detect</span>
+                        <span class="pill">Instant</span>
+                    </div>
+                </div>
+                <div>
+                    <!-- POPUP MOCKUP: Language Selection -->
+                    <div class="popup-mockup">
+                        <div class="popup-inner">
+                            <div class="popup-header">
+                                <div class="popup-brand">
+                                    <div class="popup-orb">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M14.5 7.5C15.8807 7.5 17 8.61929 17 10C17 11.3807 15.8807 12.5 14.5 12.5C13.1193 12.5 12 11.3807 12 10C12 8.61929 13.1193 7.5 14.5 7.5ZM9.5 7.5C10.8807 7.5 12 8.61929 12 10C12 11.3807 10.8807 12.5 9.5 12.5C8.11929 12.5 7 11.3807 7 10C7 8.61929 8.11929 7.5 9.5 7.5ZM14.5 5.5C12.756 5.5 11.129 6.275 10 7.545C8.871 6.275 7.244 5.5 5.5 5.5C2.462 5.5 0 7.962 0 11C0 14.038 2.462 16.5 5.5 16.5C7.244 16.5 8.871 15.725 10 14.455C11.129 15.725 12.756 16.5 14.5 16.5C17.538 16.5 20 14.038 20 11C20 7.962 17.538 5.5 14.5 5.5Z">
+                                            </path>
+                                        </svg>
+                                        <div class="dot-active"></div>
+                                    </div>
+                                    <span class="popup-brand-name">ConFluent</span>
+                                </div>
+                                <div class="popup-actions">
+                                    <svg class="popup-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                    </svg>
+                                    <div class="toggle-track on">
+                                        <div class="toggle-thumb"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="popup-card">
+                                <div class="popup-section">
+                                    <span class="popup-label">Translate to</span>
+                                    <div class="popup-select highlight-ring">
+                                        <span>English (US)</span>
+                                        <span class="chevron">▾</span>
+                                    </div>
+                                </div>
+                                <div class="popup-section">
+                                    <span class="popup-label">Trigger</span>
+                                    <div class="popup-select">
+                                        <span>⚡ Rapid (Instant)</span>
+                                        <span class="chevron">▾</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 2: Conversation Mode -->
+            <div class="showcase-row reverse reveal">
+                <div class="showcase-text">
+                    <div class="feature-badge green">🗣️ New</div>
+                    <h3>Conversation Mode</h3>
+                    <p>Read incoming messages in your language, automatically. Just pick your flag and ConFluent
+                        translates the other person's messages in real-time — right where they appear.</p>
+                    <div class="feature-pills">
+                        <span class="pill">Flag selector</span>
+                        <span class="pill">Live translation</span>
+                        <span class="pill">Non-intrusive</span>
+                    </div>
+                </div>
+                <div>
+                    <!-- POPUP MOCKUP: Conversation Mode -->
+                    <div class="popup-mockup">
+                        <div class="popup-inner">
+                            <div class="popup-header">
+                                <div class="popup-brand">
+                                    <div class="popup-orb">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M14.5 7.5C15.8807 7.5 17 8.61929 17 10C17 11.3807 15.8807 12.5 14.5 12.5C13.1193 12.5 12 11.3807 12 10C12 8.61929 13.1193 7.5 14.5 7.5ZM9.5 7.5C10.8807 7.5 12 8.61929 12 10C12 11.3807 10.8807 12.5 9.5 12.5C8.11929 12.5 7 11.3807 7 10C7 8.61929 8.11929 7.5 9.5 7.5ZM14.5 5.5C12.756 5.5 11.129 6.275 10 7.545C8.871 6.275 7.244 5.5 5.5 5.5C2.462 5.5 0 7.962 0 11C0 14.038 2.462 16.5 5.5 16.5C7.244 16.5 8.871 15.725 10 14.455C11.129 15.725 12.756 16.5 14.5 16.5C17.538 16.5 20 14.038 20 11C20 7.962 17.538 5.5 14.5 5.5Z">
+                                            </path>
+                                        </svg>
+                                        <div class="dot-active"></div>
+                                    </div>
+                                    <span class="popup-brand-name">ConFluent</span>
+                                </div>
+                                <div class="popup-actions">
+                                    <div class="toggle-track on">
+                                        <div class="toggle-thumb"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="popup-card popup-conversation">
+                                <div class="popup-conv-header">
+                                    <div class="popup-conv-title">
+                                        <span class="emoji">🗣️</span>
+                                        <span>Conversation</span>
+                                    </div>
+                                    <div class="toggle-track on" style="width: 32px; height: 18px;">
+                                        <div class="toggle-thumb" style="width: 14px; height: 14px; left: 16px;"></div>
+                                    </div>
+                                </div>
+                                <div class="popup-flags">
+                                    <div class="popup-flag active">🇫🇷</div>
+                                    <div class="popup-flag">🇬🇧</div>
+                                    <div class="popup-flag">🇪🇸</div>
+                                    <div class="popup-flag">🇩🇪</div>
+                                    <div class="popup-flag">🇮🇹</div>
+                                    <div class="popup-flag">🇵🇹</div>
+                                    <div class="popup-flag">🇷🇺</div>
+                                    <div class="popup-flag">🇯🇵</div>
+                                    <div class="popup-flag">🇨🇳</div>
+                                    <div class="popup-flag">🇸🇦</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 3: Chat demo — Conversation in action -->
+            <div class="showcase-row reveal">
+                <div class="showcase-text">
+                    <div class="feature-badge violet">💬 In Action</div>
+                    <h3>See it Live</h3>
+                    <p>Here's what a conversation looks like with ConFluent. You write in French, it sends in English.
+                        They reply in English, you read in French. Seamless.</p>
+                    <div class="feature-pills">
+                        <span class="pill">Discord</span>
+                        <span class="pill">WhatsApp</span>
+                        <span class="pill">Slack</span>
+                        <span class="pill">Messenger</span>
+                    </div>
+                </div>
+                <div>
+                    <!-- CHAT DEMO -->
+                    <div class="chat-demo">
+                        <div class="chat-header-bar">
+                            <div class="chat-avatar">J</div>
+                            <div>
+                                <div class="chat-name">John</div>
+                                <div class="chat-platform">Discord • #general</div>
+                            </div>
+                        </div>
+                        <div class="chat-messages">
+                            <div class="chat-bubble them">
+                                Hey what's up? Are you coming to the event tonight?
+                                <span class="translated">Salut ça va ? Tu viens à l'événement ce soir ?</span>
+                            </div>
+                            <div class="chat-bubble me">
+                                Oui bien sûr, j'arrive vers 20h !
+                                <div class="original-hint">→ sent as: "Yes of course, I'll be there around 8pm!"</div>
+                            </div>
+                            <div class="chat-bubble them">
+                                Perfect! See you there 🎉
+                                <span class="translated">Parfait ! À tout à l'heure 🎉</span>
+                            </div>
+                        </div>
+                        <div class="chat-typing-bar">
+                            <div class="chat-input">Tape ton message...</div>
+                            <div class="confluent-badge-inline">
+                                <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="12" r="10" />
+                                </svg>
+                                ConFluent
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 4: Trigger Modes -->
+            <div class="showcase-row reverse reveal">
+                <div class="showcase-text">
+                    <div class="feature-badge amber">⚙️ Flexible</div>
+                    <h3>Smart Trigger Modes</h3>
+                    <p>Choose how ConFluent translates. Standard mode waits for you to finish typing. Rapid translates
+                        instantly. Pro mode detects sentence endings for maximum accuracy.</p>
+                    <div class="feature-pills">
+                        <span class="pill">Timer</span>
+                        <span class="pill">Instant</span>
+                        <span class="pill">Sentence-end</span>
+                    </div>
+                </div>
+                <div>
+                    <!-- TRIGGER MODE DEMO -->
+                    <div class="trigger-demo">
+                        <div class="trigger-header">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                            Trigger Mode
+                        </div>
+                        <div class="trigger-modes">
+                            <div class="trigger-mode-item">
+                                <div class="trigger-mode-icon blue">⏱️</div>
+                                <div class="trigger-mode-info">
+                                    <h4>Standard (Timer)</h4>
+                                    <p>Translates after you stop typing</p>
+                                </div>
+                            </div>
+                            <div class="trigger-mode-item active">
+                                <div class="trigger-mode-icon amber">⚡</div>
+                                <div class="trigger-mode-info">
+                                    <h4>Rapid (Instant)</h4>
+                                    <p>Translates every keystroke instantly</p>
+                                </div>
+                            </div>
+                            <div class="trigger-mode-item">
+                                <div class="trigger-mode-icon violet">📧</div>
+                                <div class="trigger-mode-info">
+                                    <h4>Pro (Sentence End)</h4>
+                                    <p>Waits for period, !, or ? to translate</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === PLATFORMS === -->
+        <section class="platforms" id="platforms">
+            <div class="section-header reveal">
+                <p class="section-tag">Compatible</p>
+                <h2 class="section-title">Works <span class="gradient-text">everywhere</span> you chat.</h2>
+            </div>
+            <div class="platform-grid reveal">
+                <div class="platform-chip"><span class="platform-icon">💬</span><span
+                        class="platform-name">Discord</span></div>
+                <div class="platform-chip"><span class="platform-icon">📱</span><span
+                        class="platform-name">WhatsApp</span></div>
+                <div class="platform-chip"><span class="platform-icon">💼</span><span class="platform-name">Slack</span>
+                </div>
+                <div class="platform-chip"><span class="platform-icon">✉️</span><span
+                        class="platform-name">Messenger</span></div>
+                <div class="platform-chip"><span class="platform-icon">🐦</span><span
+                        class="platform-name">Twitter/X</span></div>
+                <div class="platform-chip"><span class="platform-icon">📷</span><span
+                        class="platform-name">Instagram</span></div>
+                <div class="platform-chip"><span class="platform-icon">💻</span><span
+                        class="platform-name">Telegram</span></div>
+                <div class="platform-chip"><span class="platform-icon">🌐</span><span class="platform-name">Any
+                        website</span></div>
+            </div>
+        </section>
+
+        <!-- === FAQ === -->
+        <section class="faq" id="faq">
+            <div class="section-header reveal">
+                <p class="section-tag">FAQ</p>
+                <h2 class="section-title">Frequently <span class="gradient-text">Asked Questions</span></h2>
+            </div>
+            <div class="faq-list reveal">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Is ConFluent free?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, completely free — forever. No hidden fees, no premium plan, no limits. ConFluent is and
+                            will remain 100% free to use.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Does it collect my data?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No. ConFluent collects zero personal data. Your translations are processed locally and
+                            nothing is stored or sent to any server. Read our <a href="privacy.html"
+                                style="color:var(--primary);">Privacy Policy</a> for details.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Which browsers are supported?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ConFluent is available on Google Chrome via the Chrome Web Store. Safari support is coming
+                            soon.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        How does the translation work?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ConFluent uses high-quality translation APIs to process your text in real-time. Nothing is
+                            stored — translations happen instantly and disappear once sent.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Can I use it on any website?
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! ConFluent works on any website with text input fields — Discord, WhatsApp Web, Slack,
+                            Twitter/X, Telegram, Gmail, and millions more.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- === FINAL CTA === -->
+        <section class="final-cta">
+            <h2 class="reveal">Ready to break <span class="gradient-text">language barriers?</span></h2>
+            <p class="reveal">Join users worldwide communicating freely across languages. Free forever, no account
+                required.</p>
+            <div class="cta-buttons reveal">
+                <a href="#" class="btn-chrome">
+                    <svg width="18" height="18" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" />
+                        <circle cx="12" cy="12" r="4" fill="currentColor" />
+                    </svg>
+                    Add to Chrome
+                </a>
+                <a href="feedback.html" class="btn-secondary">Send Feedback →</a>
+            </div>
+        </section>
+
+    </main><!-- end page-wrapper -->
+
+    <!-- === EXPANDED FOOTER === -->
+    <footer class="footer-main">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-brand-name">ConFluent</div>
+                <p>Your voice in every language. A free browser extension for real-time translation.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Product</h3>
+                <a href="#features">Features</a>
+                <a href="#platforms">Platforms</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <div class="footer-col">
+                <h3>Legal</h3>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="feedback.html">Feedback</a>
+            </div>
+            <div class="footer-col">
+                <h3>Connect</h3>
+                <a href="https://github.com/GPT012/Traductor" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 ConFluent — Free forever. Your voice in every language.</p>
+        </div>
+    </footer>
+
+    <!-- === SCRIPTS === -->
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+
+    <!-- Auth-aware navbar -->
+    <script>
+        (function () {
+            const raw = localStorage.getItem('confluent_user');
+            if (!raw) return;
+            try {
+                const user = JSON.parse(raw);
+                // Desktop
+                const signinD = document.getElementById('nav-signin-desktop');
+                const userD = document.getElementById('nav-user-desktop');
+                if (signinD) signinD.style.display = 'none';
+                if (userD) {
+                    userD.style.display = 'flex';
+                    document.getElementById('nav-avatar-desktop').src = user.picture;
+                    document.getElementById('nav-name-desktop').textContent = user.name.split(' ')[0];
+                }
+                // Mobile
+                const signinM = document.getElementById('nav-signin-mobile');
+                const userM = document.getElementById('nav-user-mobile');
+                if (signinM) signinM.style.display = 'none';
+                if (userM) {
+                    userM.style.display = 'flex';
+                    document.getElementById('nav-avatar-mobile').src = user.picture;
+                    document.getElementById('nav-name-mobile').textContent = user.name.split(' ')[0];
+                }
+            } catch (e) { }
+        })();
+
+        function navLogout() {
+            if (confirm('Sign out of ConFluent?')) {
+                localStorage.removeItem('confluent_user');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>

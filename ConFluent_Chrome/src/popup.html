@@ -52,11 +52,50 @@
     </div>
 
     <!-- SETTINGS CARD -->
-    <div class="card">
+    <div class="card" id="main-card">
 
-      <!-- Target Language -->
+      <!-- Reading Language -->
       <div class="section">
-        <label>Translate to</label>
+        <label>Reading Language</label>
+        <div class="select-wrapper">
+          <select id="myLang">
+            <option value="en">English (US)</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="pt">Português</option>
+            <option value="ru">Русский</option>
+            <option value="ja">日本語</option>
+            <option value="zh">中文</option>
+            <option value="ar">العربية</option>
+          </select>
+          <svg class="select-icon" width="10" height="6" viewBox="0 0 10 6" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Live Chat Translation Toggle -->
+      <div class="section-header" style="margin-top: -6px; margin-bottom: 6px;">
+        <div class="section-title">
+          <span class="icon">📡</span>
+          <span style="font-size: 13px;">Auto-Translate Incoming Chat</span>
+        </div>
+        <label class="switch small">
+          <input type="checkbox" id="conversationMode">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Divider -->
+      <div style="height: 1px; background: var(--border); margin: 2px 0;"></div>
+
+      <!-- Writing Language -->
+      <div class="section">
+        <label>Writing Language</label>
         <div class="select-wrapper">
           <select id="targetLang">
             <option value="en">English (US)</option>
@@ -83,9 +122,8 @@
         <label>Trigger</label>
         <div class="select-wrapper">
           <select id="triggerMode">
-            <option value="timer">Standard (Timer)</option>
-            <option value="rapid">⚡ Rapid (Instant)</option>
-            <option value="pro">📧 Pro (Sentence End)</option>
+            <option value="timer">⏱️ Standard (1s Pause)</option>
+            <option value="manual">✋ Manual (Ctrl+Enter)</option>
           </select>
           <svg class="select-icon" width="10" height="6" viewBox="0 0 10 6" fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -95,52 +133,11 @@
         </div>
       </div>
 
-      <!-- Delay (Hidden by default) -->
-      <div class="section" id="delay-container">
-        <label>Typing Delay</label>
-        <div class="select-wrapper">
-          <select id="delay">
-            <option value="500">Fast (0.5s)</option>
-            <option value="1000">Normal (1s)</option>
-            <option value="1500">Relaxed (1.5s)</option>
-            <option value="2000">Safe (2s)</option>
-          </select>
-          <svg class="select-icon" width="10" height="6" viewBox="0 0 10 6" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </div>
-      </div>
+
 
     </div>
 
-    <!-- CONVERSATION CARD -->
-    <div class="card conversation-card">
-      <div class="section-header">
-        <div class="section-title">
-          <span class="icon">🗣️</span>
-          <span>Conversation</span>
-        </div>
-        <label class="switch small">
-          <input type="checkbox" id="conversationMode">
-          <span class="slider"></span>
-        </label>
-      </div>
 
-      <div class="flag-selector" id="flagSelector" style="display: none;">
-        <button class="flag-btn" data-lang="fr" title="Français">🇫🇷</button>
-        <button class="flag-btn" data-lang="en" title="English">🇬🇧</button>
-        <button class="flag-btn" data-lang="es" title="Español">🇪🇸</button>
-        <button class="flag-btn" data-lang="de" title="Deutsch">🇩🇪</button>
-        <button class="flag-btn" data-lang="it" title="Italiano">🇮🇹</button>
-        <button class="flag-btn" data-lang="pt" title="Português">🇵🇹</button>
-        <button class="flag-btn" data-lang="ru" title="Русский">🇷🇺</button>
-        <button class="flag-btn" data-lang="ja" title="日本語">🇯🇵</button>
-        <button class="flag-btn" data-lang="zh" title="中文">🇨🇳</button>
-        <button class="flag-btn" data-lang="ar" title="العربية">🇸🇦</button>
-      </div>
-    </div>
 
   </div>
 

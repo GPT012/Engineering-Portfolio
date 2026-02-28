@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConFluent</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- CUSTOM TITLE BAR -->
+  <div class="titlebar" id="titlebar">
+    <div class="titlebar-drag"></div>
+    <div class="titlebar-brand">
+      <svg class="titlebar-logo" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M14.5 7.5C15.8807 7.5 17 8.61929 17 10C17 11.3807 15.8807 12.5 14.5 12.5C13.1193 12.5 12 11.3807 12 10C12 8.61929 13.1193 7.5 14.5 7.5ZM9.5 7.5C10.8807 7.5 12 8.61929 12 10C12 11.3807 10.8807 12.5 9.5 12.5C8.11929 12.5 7 11.3807 7 10C7 8.61929 8.11929 7.5 9.5 7.5ZM14.5 5.5C12.756 5.5 11.129 6.275 10 7.545C8.871 6.275 7.244 5.5 5.5 5.5C2.462 5.5 0 7.962 0 11C0 14.038 2.462 16.5 5.5 16.5C7.244 16.5 8.871 15.725 10 14.455C11.129 15.725 12.756 16.5 14.5 16.5C17.538 16.5 20 14.038 20 11C20 7.962 17.538 5.5 14.5 5.5Z" />
+      </svg>
+      <span class="titlebar-name">ConFluent</span>
+    </div>
+    <div class="titlebar-status" id="global-status">
+      <div class="status-dot active" id="status-dot"></div>
+      <span id="status-label">Active</span>
+    </div>
+  </div>
+
+  <!-- ACCESSIBILITY BANNER (hidden by default) -->
+  <div class="banner banner-warning" id="accessibility-banner" style="display:none;">
+    <svg class="banner-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+    <span>Accessibility permission required.</span>
+    <button class="banner-btn" id="grant-access-btn">Grant Access</button>
+  </div>
+
+  <!-- LIVE BUFFER DISPLAY -->
+  <div class="live-section">
+    <div class="live-header">
+      <span class="live-label">LIVE TYPING</span>
+      <div class="live-indicator" id="live-indicator">
+        <div class="pulse-dot"></div>
+      </div>
+    </div>
+    <div class="live-buffer" id="live-buffer">
+      <span class="live-placeholder">Waiting for input in any app...</span>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="settings-section">
+    <div class="settings-row">
+      <div class="setting-group">
+        <label for="targetLang">Translate to</label>
+        <div class="select-wrapper">
+          <select id="targetLang">
+            <option value="en">English (US)</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="pt">Português</option>
+            <option value="ru">Русский</option>
+            <option value="ja">日本語</option>
+            <option value="zh">中文</option>
+            <option value="ar">العربية</option>
+          </select>
+          <svg class="select-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div class="setting-group">
+        <label for="triggerMode">Trigger</label>
+        <div class="select-wrapper">
+          <select id="triggerMode">
+            <option value="timer">Standard (Timer)</option>
+            <option value="rapid">⚡ Rapid (Instant)</option>
+            <option value="pro">📧 Pro (Sentence End)</option>
+          </select>
+          <svg class="select-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="settings-row settings-row-secondary">
+      <div class="setting-group" id="delay-container">
+        <label for="delay">Delay</label>
+        <div class="select-wrapper">
+          <select id="delay">
+            <option value="500">Fast (0.5s)</option>
+            <option value="1000">Normal (1s)</option>
+            <option value="1500">Relaxed (1.5s)</option>
+            <option value="2000">Safe (2s)</option>
+          </select>
+          <svg class="select-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div class="settings-controls">
+        <button id="theme-toggle" class="icon-btn" title="Toggle Dark Mode">
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+        </button>
+        <label class="switch" title="Enable / Disable">
+          <input type="checkbox" id="enabled" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSLATION LOG -->
+  <div class="log-section">
+    <div class="log-header">
+      <span class="log-label">TRANSLATION LOG</span>
+      <button class="log-clear" id="clear-log-btn">Clear</button>
+    </div>
+    <div class="log-list" id="log-list">
+      <div class="log-empty">No translations yet. Start typing in any app...</div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-text">ConFluent <span id="app-version">v1.0</span></span>
+    <span class="footer-shortcut">⌘⇧T to toggle</span>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+
+</html>

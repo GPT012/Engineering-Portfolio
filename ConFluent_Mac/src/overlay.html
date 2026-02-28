@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ConFluent Overlay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+            -webkit-app-region: drag;
+            user-select: none;
+        }
+
+        .badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-app-region: no-drag;
+            /* Glassmorphism */
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        .badge:active {
+            transform: scale(0.95);
+        }
+
+        /* Status Ring */
+        .badge-ring {
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .badge.active .badge-ring {
+            border-color: #34d399;
+        }
+
+        .badge.translating .badge-ring {
+            border-color: #818cf8;
+            animation: ring-pulse 1.2s infinite;
+        }
+
+        .badge.error .badge-ring {
+            border-color: #f87171;
+        }
+
+        .badge.disabled .badge-ring {
+            border-color: transparent;
+        }
+
+        @keyframes ring-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Logo */
+        .badge-logo {
+            width: 22px;
+            height: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .badge.active .badge-logo {
+            color: #34d399;
+        }
+
+        .badge.translating .badge-logo {
+            color: #818cf8;
+            animation: logo-pulse 1.2s infinite;
+        }
+
+        .badge.error .badge-logo {
+            color: #f87171;
+        }
+
+        .badge.disabled .badge-logo {
+            color: #64748b;
+            opacity: 0.5;
+        }
+
+        @keyframes logo-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(0.92);
+            }
+        }
+
+        /* Status Dot */
+        .status-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .badge.active .status-dot {
+            background: #34d399;
+            box-shadow: 0 0 6px #34d399;
+        }
+
+        .badge.translating .status-dot {
+            background: #818cf8;
+            box-shadow: 0 0 6px #818cf8;
+            animation: dot-pulse 1s infinite;
+        }
+
+        .badge.error .status-dot {
+            background: #f87171;
+            box-shadow: 0 0 6px #f87171;
+        }
+
+        .badge.disabled .status-dot {
+            background: #475569;
+        }
+
+        @keyframes dot-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.7);
+            }
+        }
+
+        /* Tooltip */
+        .badge-tooltip {
+            position: absolute;
+            bottom: 54px;
+            right: 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            color: #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .badge:hover .badge-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Quick translation popup */
+        .quick-translate {
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 280px;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            display: none;
+            -webkit-app-region: no-drag;
+        }
+
+        .quick-translate.show {
+            display: block;
+            animation: popup-in 0.25s ease-out;
+        }
+
+        @keyframes popup-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .qt-label {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .qt-text {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            font-size: 13px;
+            color: #f1f5f9;
+            line-height: 1.5;
+            word-break: break-word;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .qt-original {
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .qt-result {
+            padding: 8px 10px;
+            background: rgba(129, 140, 248, 0.08);
+            border-radius: 8px;
+            border-left: 3px solid #818cf8;
+        }
+
+        .qt-result .qt-text {
+            color: #c7d2fe;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="badge active" id="badge">
+        <div class="badge-ring"></div>
+        <div class="status-dot"></div>
+        <svg class="badge-logo" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M14.5 7.5C15.8807 7.5 17 8.61929 17 10C17 11.3807 15.8807 12.5 14.5 12.5C13.1193 12.5 12 11.3807 12 10C12 8.61929 13.1193 7.5 14.5 7.5ZM9.5 7.5C10.8807 7.5 12 8.61929 12 10C12 11.3807 10.8807 12.5 9.5 12.5C8.11929 12.5 7 11.3807 7 10C7 8.61929 8.11929 7.5 9.5 7.5ZM14.5 5.5C12.756 5.5 11.129 6.275 10 7.545C8.871 6.275 7.244 5.5 5.5 5.5C2.462 5.5 0 7.962 0 11C0 14.038 2.462 16.5 5.5 16.5C7.244 16.5 8.871 15.725 10 14.455C11.129 15.725 12.756 16.5 14.5 16.5C17.538 16.5 20 14.038 20 11C20 7.962 17.538 5.5 14.5 5.5Z" />
+        </svg>
+        <div class="badge-tooltip" id="tooltip">ConFluent — Active</div>
+    </div>
+
+    <!-- Quick translate popup (shown after translation) -->
+    <div class="quick-translate" id="quick-translate">
+        <div class="qt-original">
+            <div class="qt-label">Original</div>
+            <div class="qt-text" id="qt-original-text"></div>
+        </div>
+        <div class="qt-result">
+            <div class="qt-label">Translation</div>
+            <div class="qt-text" id="qt-result-text"></div>
+        </div>
+    </div>
+
+    <script>
+        const badge = document.getElementById('badge');
+        const tooltip = document.getElementById('tooltip');
+        const quickTranslate = document.getElementById('quick-translate');
+        const qtOriginal = document.getElementById('qt-original-text');
+        const qtResult = document.getElementById('qt-result-text');
+
+        let isEnabled = true;
+        let hidePopupTimer = null;
+        let clickTimer = null;
+
+        // Mouse enter/leave to toggle click-through
+        badge.addEventListener('mouseenter', () => {
+            window.overlayAPI.mouseEnter();
+        });
+        badge.addEventListener('mouseleave', () => {
+            window.overlayAPI.mouseLeave();
+            quickTranslate.classList.remove('show');
+        });
+
+        // Handle single vs double click properly
+        badge.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (clickTimer) {
+                // Double-click detected
+                clearTimeout(clickTimer);
+                clickTimer = null;
+                // Toggle enabled
+                isEnabled = !isEnabled;
+                window.overlayAPI.toggleEnabled(isEnabled);
+                updateBadgeState(isEnabled ? 'active' : 'disabled');
+            } else {
+                // Wait to see if a second click comes
+                clickTimer = setTimeout(() => {
+                    clickTimer = null;
+                    // Single click: show main window
+                    window.overlayAPI.showMainWindow();
+                }, 300);
+            }
+        });
+
+        function updateBadgeState(state) {
+            badge.className = 'badge ' + state;
+            const labels = {
+                active: 'ConFluent — Active',
+                translating: 'Translating...',
+                error: 'Translation Error',
+                disabled: 'ConFluent — Paused (double-click to enable)'
+            };
+            tooltip.textContent = labels[state] || 'ConFluent';
+        }
+
+        function showTranslationPopup(original, translation) {
+            qtOriginal.textContent = original;
+            qtResult.textContent = translation;
+            quickTranslate.classList.add('show');
+
+            clearTimeout(hidePopupTimer);
+            hidePopupTimer = setTimeout(() => {
+                quickTranslate.classList.remove('show');
+            }, 4000);
+        }
+
+        // Listen for events from main process
+        window.overlayAPI.onStatusChange((status) => {
+            updateBadgeState(status);
+        });
+
+        window.overlayAPI.onTranslationDone((entry) => {
+            showTranslationPopup(entry.original, entry.translation);
+        });
+
+        window.overlayAPI.onEnabledChanged((enabled) => {
+            isEnabled = enabled;
+            updateBadgeState(enabled ? 'active' : 'disabled');
+        });
+
+        // Speech Recognition Setup
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            let finalTranscript = '';
+
+            recognition.onstart = () => {
+                finalTranscript = '';
+                updateBadgeState('active');
+                // Using active as a base, we can make it pulsing if we want
+                badge.style.borderColor = '#eab308'; // yellowish for recording
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                // Optional: show dictation text inside quick translate
+                // showTranslationPopup('Dictating...', interimTranscript || finalTranscript);
+            };
+
+            recognition.onerror = (event) => {
+                window.overlayAPI.sendDictationResult('', event.error);
+                badge.style.borderColor = '';
+            };
+
+            recognition.onend = () => {
+                badge.style.borderColor = '';
+                if (finalTranscript.trim()) {
+                    window.overlayAPI.sendDictationResult(finalTranscript.trim(), null);
+                } else {
+                    window.overlayAPI.sendDictationResult('', 'empty');
+                }
+            };
+
+            window.overlayAPI.onStartDictation(() => {
+                try {
+                    finalTranscript = '';
+                    recognition.lang = 'fr-FR'; // User types in French, transcribing in French to then maybe translate, or keep as dictation
+                    recognition.start();
+                } catch (e) { }
+            });
+
+            window.overlayAPI.onStopDictation(() => {
+                try {
+                    recognition.stop();
+                } catch (e) { }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

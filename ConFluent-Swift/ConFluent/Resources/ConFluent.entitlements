@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Network access for Google Translate API -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- Microphone access for dictation -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+
+    <!-- Accessibility for keyboard interception (required for CGEvent tap) -->
+    <!-- Note: This doesn't grant the permission — the user must manually
+         enable it in System Settings > Privacy > Accessibility -->
+</dict>
+</plist>

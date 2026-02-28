@@ -1,0 +1,231 @@
+// Background Service Worker - ConFluent v3.2 (Optimized)
+// Google Translate FREE + Translation Cache + Self-Healing
+
+'use strict';
+
+const DEBUG = false;
+
+const DEFAULT_CONFIG = {
+    targetLang: 'en',
+    sourceLang: 'auto',
+    enabled: true
+};
+
+// === TRANSLATION CACHE (LRU) ===
+const CACHE_MAX_SIZE = 200;
+const translationCache = new Map(); // key: `${sl}:${tl}:${text}` → { translation, detectedLang }
+
+let autoTargetLang = null; // Initialized from config on first use
+
+function getCacheKey(text, targetLang, sourceLang) {
+    return `${sourceLang}:${targetLang}:${text.trim().toLowerCase()}`;
+}
+
+function getCached(text, targetLang, sourceLang) {
+    const key = getCacheKey(text, targetLang, sourceLang);
+    if (translationCache.has(key)) {
+        const value = translationCache.get(key);
+        // Move to end (most recently used)
+        translationCache.delete(key);
+        translationCache.set(key, value);
+        return value;
+    }
+    return null;
+}
+
+function setCache(text, targetLang, sourceLang, translation) {
+    const key = getCacheKey(text, targetLang, sourceLang);
+    // Evict oldest if full
+    if (translationCache.size >= CACHE_MAX_SIZE) {
+        const oldest = translationCache.keys().next().value;
+        translationCache.delete(oldest);
+    }
+    translationCache.set(key, translation);
+}
+
+// === REQUEST DEDUPLICATION ===
+const pendingRequests = new Map(); // key → Promise
+
+// === CONFIG ===
+async function getConfig() {
+    const result = await chrome.storage.local.get(['targetLang', 'sourceLang', 'enabled']);
+    return { ...DEFAULT_CONFIG, ...result };
+}
+
+async function saveConfig(config) {
+    await chrome.storage.local.set(config);
+}
+
+// === TRANSLATION (with cache + dedup) ===
+async function translateText(text, targetLang = 'en', sourceLang = 'auto') {
+    if (!text || text.trim().length === 0) return { error: 'Empty text' };
+
+    const trimmed = text.trim();
+
+    // 1. Check cache
+    const cached = getCached(trimmed, targetLang, sourceLang);
+    if (cached) return cached;
+
+    // 2. Check for pending identical request (dedup)
+    const dedupeKey = getCacheKey(trimmed, targetLang, sourceLang);
+    if (pendingRequests.has(dedupeKey)) {
+        return pendingRequests.get(dedupeKey);
+    }
+
+    // 3. Make API call
+    const requestPromise = (async () => {
+        try {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(trimmed)}`;
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+            let translation = '';
+            let detectedLang = data?.[2] || null;
+
+            if (data?.[0]) {
+                for (const part of data[0]) {
+                    if (part?.[0]) translation += part[0];
+                }
+            }
+
+            const result = translation.trim();
+            if (result.length > 0) {
+                const returnObj = { translation: result, detectedLang };
+                setCache(trimmed, targetLang, sourceLang, returnObj);
+                return returnObj;
+            }
+            return { error: 'No translation received' };
+        } catch (error) {
+            return { error: error.message };
+        } finally {
+            pendingRequests.delete(dedupeKey);
+        }
+    })();
+
+    pendingRequests.set(dedupeKey, requestPromise);
+    return requestPromise;
+}
+
+// === MESSAGE ROUTING ===
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    switch (request.action) {
+        case 'getStatus':
+            getConfig().then(config =>
+                sendResponse({ enabled: config.enabled, targetLang: config.targetLang })
+            );
+            return true;
+
+        case 'toggle':
+            saveConfig({ enabled: request.enabled }).then(() => {
+                chrome.tabs.query({}, tabs => {
+                    for (const tab of tabs) {
+                        chrome.tabs.sendMessage(tab.id, {
+                            action: 'statusChanged',
+                            enabled: request.enabled
+                        }).catch(() => { });
+                    }
+                });
+                sendResponse({ enabled: request.enabled });
+            });
+            return true;
+
+        case 'setTargetLang':
+            saveConfig({ targetLang: request.lang }).then(() =>
+                sendResponse({ targetLang: request.lang })
+            );
+            return true;
+
+        case 'translate':
+            getConfig().then(config => {
+                const isIncoming = request.isIncoming;
+                const isConversation = request.isConversation; // Only learn language from conversation mode
+                const myLang = request.targetLang || config.targetLang;
+
+                // Initialize autoTargetLang from config if not yet set
+                if (autoTargetLang === null) {
+                    autoTargetLang = myLang;
+                }
+
+                // For incoming: translate TO user's preferred lang
+                // For outgoing: translate TO the detected conversation language
+                const target = isIncoming ? myLang : autoTargetLang;
+
+                translateText(request.text, target, config.sourceLang)
+                    .then(result => {
+                        // Only learn conversation language from actual conversation mode incoming messages
+                        // NOT from tooltip selections or other sources
+                        const ALLOWED_LANGS = ['en', 'fr', 'es', 'de', 'it', 'pt', 'ru', 'ja', 'zh-CN', 'zh', 'ar'];
+                        const detected = result.detectedLang;
+
+                        if (isConversation && isIncoming && detected && ALLOWED_LANGS.includes(detected) && detected !== myLang) {
+                            autoTargetLang = detected;
+                            if (DEBUG) console.log('[ConFluent] 🎯 Conversation language detected:', autoTargetLang);
+                        }
+                        sendResponse(result);
+                    });
+            });
+            return true;
+
+        case 'getConfig':
+            getConfig().then(config => sendResponse(config));
+            return true;
+
+        default:
+            return false;
+    }
+});
+
+// === SELF-HEALING: Inject on install/update ===
+chrome.runtime.onInstalled.addListener(async (details) => {
+    if (DEBUG) console.log('[ConFluent] 🔄 Install/Update — reason:', details.reason);
+
+    // Open onboarding page on FIRST install only
+    if (details.reason === 'install') {
+        const { onboardingDone } = await chrome.storage.local.get('onboardingDone');
+        if (!onboardingDone) {
+            chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
+        }
+    }
+
+    // Inject content scripts into already-open tabs
+    const manifest = chrome.runtime.getManifest();
+    for (const cs of manifest.content_scripts) {
+        const tabs = await chrome.tabs.query({ url: cs.matches });
+        for (const tab of tabs) {
+            if (/^(chrome|edge|about):/.test(tab.url)) continue;
+            try {
+                await chrome.scripting.executeScript({
+                    target: { tabId: tab.id, allFrames: cs.all_frames },
+                    files: cs.js
+                });
+            } catch (_) { }
+        }
+    }
+});
+
+// === SELF-HEALING: Re-inject on tab activation ===
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+    try {
+        const tab = await chrome.tabs.get(tabId);
+        if (!tab.url?.startsWith('http')) return;
+
+        try {
+            await chrome.tabs.sendMessage(tabId, { action: 'ping' });
+        } catch {
+            if (DEBUG) console.log('[ConFluent] 🚑 Tab missing script, injecting...', tab.url);
+            try {
+                await chrome.scripting.executeScript({
+                    target: { tabId, allFrames: true },
+                    files: ['content.js']
+                });
+            } catch (_) { }
+        }
+    } catch (_) { }
+});
+
+if (DEBUG) console.log('[ConFluent] ✅ Service Worker v3.2 (Cache + Dedup)');

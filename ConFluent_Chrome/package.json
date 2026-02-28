@@ -1,0 +1,19 @@
+{
+  "name": "confluent_chrome",
+  "version": "1.0.0",
+  "description": "Chrome extension that automatically translates what you type on any web page — **100% FREE** via Google Translate.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "playwright": "^1.58.2"
+  }
+}

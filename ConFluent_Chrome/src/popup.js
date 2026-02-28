@@ -5,11 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // === DOM REFERENCES ===
     const $ = (id) => document.getElementById(id);
     const elEnabled = $('enabled');
+    const elMyLang = $('myLang');
     const elTargetLang = $('targetLang');
-    const elDelay = $('delay');
     const elTriggerMode = $('triggerMode');
     const elConversationMode = $('conversationMode');
-    const elFlagSelector = $('flagSelector');
     const elThemeToggle = $('theme-toggle');
     const elStatus = $('status');
     const elDelayContainer = $('delay-container');
@@ -17,10 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const elUserName = $('user-name');
     const elUserAvatar = $('user-avatar');
     const elLogoutBtn = $('logout-btn');
-    const flagBtns = document.querySelectorAll('.flag-btn');
-
-    // Current myLang value
-    let currentMyLang = 'fr';
 
     // === DEBOUNCED SAVE ===
     let saveTimer = null;
@@ -33,29 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => elStatus.classList.remove('show'), 1500);
     }
 
-    // === FLAG SELECTION ===
-    function selectFlag(lang) {
-        currentMyLang = lang;
-        flagBtns.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.lang === lang);
-        });
-    }
-
     // === LOAD CONFIG ===
     chrome.storage.local.get(
-        ['enabled', 'targetLang', 'delay', 'triggerMode', 'conversationMode', 'myLang', 'theme', 'user'],
+        ['enabled', 'delay', 'triggerMode', 'conversationMode', 'myLang', 'targetLang', 'theme', 'user'],
         (c) => {
             if (chrome.runtime.lastError || !c) return;
 
             elEnabled.checked = c.enabled !== false;
+            // Support legacy users: myLang was Preferred Lang, targetLang was Reply Lang
+            if (c.myLang) elMyLang.value = c.myLang;
             if (c.targetLang) elTargetLang.value = c.targetLang;
-            if (c.delay) elDelay.value = c.delay;
             if (c.triggerMode) elTriggerMode.value = c.triggerMode;
             if (c.conversationMode) elConversationMode.checked = true;
-            if (c.myLang) currentMyLang = c.myLang;
             if (c.theme === 'dark') document.body.classList.add('dark-mode');
 
-            selectFlag(currentMyLang);
             updateVisibility();
 
             // Show profile if logged in (no forced redirect)
@@ -113,11 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
         saveTimer = setTimeout(() => {
             const config = {
                 enabled: elEnabled.checked,
-                targetLang: elTargetLang.value,
+                targetLang: elTargetLang.value, // User's reply language
+                myLang: elMyLang.value,         // User's native/incoming language
                 triggerMode: elTriggerMode.value,
-                delay: parseInt(elDelay.value),
                 conversationMode: elConversationMode.checked,
-                myLang: currentMyLang,
                 theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
             };
 
@@ -138,29 +123,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }, SAVE_DEBOUNCE);
     }
 
-    // === VISIBILITY LOGIC ===
+    // === UI HELPERS ===
     function updateVisibility() {
-        if (elFlagSelector) {
-            elFlagSelector.style.display = elConversationMode.checked ? 'flex' : 'none';
-        }
-        if (elDelayContainer) {
-            elDelayContainer.style.display = elTriggerMode.value === 'timer' ? 'flex' : 'none';
+        const mainCard = $('main-card');
+        if (mainCard && elConversationMode) {
+            if (elConversationMode.checked) {
+                mainCard.classList.add('live-chat-active');
+            } else {
+                mainCard.classList.remove('live-chat-active');
+            }
         }
     }
 
     // === EVENT LISTENERS ===
-    const inputs = [elEnabled, elTargetLang, elTriggerMode, elDelay, elConversationMode];
+    const inputs = [elEnabled, elMyLang, elTargetLang, elTriggerMode, elConversationMode];
     for (const input of inputs) {
         if (input) input.addEventListener('change', saveConfig);
     }
-
-    // Flag button clicks
-    flagBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            selectFlag(btn.dataset.lang);
-            saveConfig();
-        });
-    });
 
     // Conversation mode and trigger mode also update visibility
     elConversationMode?.addEventListener('change', updateVisibility);

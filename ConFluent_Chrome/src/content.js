@@ -42,8 +42,9 @@
   });
 
   // === STATE ===
-  let isEnabled = true;
+  let isEnabled = false; // Start disabled; loadConfig() will enable if user has it on
   let isTranslating = false;
+  let isReplacing = false; // Guard: true while we are pasting translated text
   let isDeleting = false;
   let typingTimer = null;
   let originalText = '';
@@ -390,8 +391,16 @@
   };
 
   // === INPUT FIELD DETECTION ===
+  function getDeepActiveElement(root = document) {
+    let activeEl = root.activeElement;
+    while (activeEl && activeEl.shadowRoot && activeEl.shadowRoot.activeElement) {
+      activeEl = activeEl.shadowRoot.activeElement;
+    }
+    return activeEl;
+  }
+
   function findActiveEditor() {
-    const a = document.activeElement;
+    const a = getDeepActiveElement();
     if (a) {
       if (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA') return a;
       const editor = a.closest('[data-slate-editor="true"]')
@@ -435,55 +444,81 @@
   }
 
   async function replaceText(el, newText) {
+    isReplacing = true;
     try {
+      // 1. Snapshot text before async op
+      const preText = getText(el);
+
+      // 2. Write to real clipboard (needed for paste fallback)
       await navigator.clipboard.writeText(newText);
+
+      // 3. Race condition guard: user typed while clipboard was writing?
+      if (getText(el) !== preText) {
+        if (DEBUG) console.warn('[ConFluent] Paste aborted: user kept typing.');
+        return false;
+      }
+
       el.focus();
 
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        // Standard inputs
-        el.select();
+        // === STANDARD INPUTS ===
+        el.setSelectionRange(0, el.value.length);
         document.execCommand('insertText', false, newText);
+        el.setSelectionRange(el.value.length, el.value.length);
       } else {
-        // Rich text editors (Discord/Slate/ProseMirror)
+        // === RICH TEXT EDITORS (Discord/Slate/ProseMirror/WhatsApp) ===
+        // To properly replace text in React/Slate without appending, we must:
+        // 1. Modify the DOM selection to cover all text.
+        // 2. Trigger a KeyboardEvent 'Cmd+A' so framework key-handlers notice.
+        // 3. WAIT a micro-tick so the framework's state model syncs the new selection.
+        // 4. Dispatch a ClipboardEvent 'paste' which the framework handles natively.
+
+        // Step 1: Force DOM Selection
         document.execCommand('selectAll', false, null);
-        await new Promise(r => setTimeout(r, 5));
+        document.dispatchEvent(new Event('selectionchange'));
 
-        // Ensure full selection
-        const s = window.getSelection();
-        if (s.toString().length < getText(el).length) {
-          const range = document.createRange();
-          range.selectNodeContents(el);
-          s.removeAllRanges();
-          s.addRange(range);
-        }
+        // Step 2: Push fake keydown so framework event handlers trigger
+        el.dispatchEvent(new KeyboardEvent('keydown', {
+          key: 'a', code: 'KeyA', keyCode: 65, which: 65,
+          ctrlKey: !IS_MAC, metaKey: IS_MAC,
+          bubbles: true, cancelable: true, composed: true
+        }));
 
-        // Simulate Cmd/Ctrl+A
-        el.dispatchEvent(createKeyEvent('keydown', 'a', 'KeyA', 65));
-        await new Promise(r => setTimeout(r, 10));
+        // Step 3: Crucial delay — let the React/Slate reconciliation engine update its internal selection
+        // Since isReplacing is true, the user typing is blocked in our handleInput.
+        await new Promise(r => setTimeout(r, 15));
 
-        // Paste via ClipboardEvent
+        // Step 4: Dispatch the simulated Paste
         const dt = new DataTransfer();
         dt.setData('text/plain', newText);
-        const pasteEvent = new ClipboardEvent('paste', {
+        const pasteEvt = new ClipboardEvent('paste', {
           bubbles: true, cancelable: true, composed: true,
           clipboardData: dt, view: window
         });
-        el.dispatchEvent(pasteEvent);
+        el.dispatchEvent(pasteEvt);
 
-        // Fallback if paste wasn't consumed
-        if (!pasteEvent.defaultPrevented) {
+        // Fallback if Paste wasn't consumed
+        if (!pasteEvt.defaultPrevented) {
           document.execCommand('insertText', false, newText);
         }
+
+        // Force cursor to end
+        const endSel = window.getSelection();
+        if (endSel) endSel.collapseToEnd();
       }
 
-      // Notify UI
-      await new Promise(r => setTimeout(r, 20));
+      // 4. Notify UI frameworks
       el.dispatchEvent(new InputEvent('input', {
         bubbles: true, inputType: 'insertText', data: newText, composed: true
       }));
       el.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+
     } catch (err) {
       console.warn('[ConFluent] Paste error:', err);
+      return false;
+    } finally {
+      setTimeout(() => { isReplacing = false; }, 100);
     }
   }
 
@@ -497,16 +532,36 @@
   }, true);
 
   function translate(el, text, ignoreGuard = false) {
-    if (isTranslating || !text || text.length < 2 || text === lastTranslated) return;
+    if (!text || text.length < 2 || text === lastTranslated) return;
     if (!ignoreGuard && Date.now() - lastInputTime < 50) return;
+
+    // ONLY timer mode allows auto-triggered translations.
+    // Any other mode (manual, legacy, unknown) requires explicit trigger (ignoreGuard=true).
+    const mode = settings.triggerMode || 'timer';
+    if (mode !== 'timer' && !ignoreGuard) return;
 
     isTranslating = true;
     const gen = ++translationGeneration; // Stale guard
     updateBadgeUI('working');
 
+    // Safety: if translation never completes, reset after 10s
+    setTimeout(() => {
+      if (isTranslating && gen === translationGeneration) {
+        isTranslating = false;
+        updateBadgeUI('on');
+      }
+    }, 10000);
+
     try {
+      // User's outgoing reply language
+      const targetLang = settings.targetLang;
+      // IMPORTANT: Explicitly set the source language to the user's native language.
+      // This prevents the translation engine from getting confused by mixed-language sentences
+      // when the user resumes typing after a previous translation.
+      const sourceLang = settings.myLang;
+
       chrome.runtime.sendMessage(
-        { action: 'translate', text, targetLang: settings.targetLang },
+        { action: 'translate', text, targetLang, sourceLang },
         async (res) => {
           try {
             // Discard stale results
@@ -524,10 +579,15 @@
 
             if (res?.translation && res.translation.toLowerCase() !== text.toLowerCase()) {
               if (ignoreGuard || (getText(el) === text && Date.now() - lastInputTime > 50)) {
-                await replaceText(el, res.translation);
-                originalText = res.translation;
-                lastTranslated = res.translation;
-                updateBadgeUI('done');
+                const pasted = await replaceText(el, res.translation);
+                if (pasted) {
+                  originalText = res.translation;
+                  lastTranslated = res.translation;
+                  updateBadgeUI('done');
+                } else {
+                  // Paste aborted
+                  updateBadgeUI('on');
+                }
               } else {
                 updateBadgeUI('on');
               }
@@ -535,7 +595,9 @@
               updateBadgeUI('on');
             }
           } finally {
-            isTranslating = false;
+            if (gen === translationGeneration) {
+              isTranslating = false;
+            }
           }
         }
       );
@@ -545,36 +607,68 @@
     }
   }
 
+  // === MANUAL TRIGGER (Ctrl+Enter) ===
+  document.addEventListener('keydown', (e) => {
+    if (!isEnabled) return;
+    const mode = settings.triggerMode || 'timer';
+    if (mode !== 'manual') return;
+    // Ctrl+Enter (or Cmd+Enter on Mac)
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      const el = findActiveEditor();
+      if (!el) return;
+      const currentText = getText(el).trim();
+      if (currentText && currentText.length >= 2 && currentText !== lastTranslated) {
+        translate(el, currentText, true);
+      }
+    }
+  }, true);
+
   // === UNIFIED INPUT HANDLER ===
   function handleInput() {
-    if (!isEnabled || isTranslating) return;
+    if (!isEnabled || isReplacing) return;
     lastInputTime = Date.now();
     const el = findActiveEditor();
     if (!el) return;
     const currentText = getText(el).trim();
 
+    // Field was cleared (user sent message, or manually cleared)
+    // Reset ALL state so next message works fresh
+    if (currentText.length === 0) {
+      originalText = '';
+      lastTranslated = '';
+      isTranslating = false;
+      isDeleting = false;
+      clearTimeout(typingTimer);
+      updateBadgeUI('on');
+      return;
+    }
+
     if (isDeleting) { isDeleting = false; originalText = currentText; return; }
+
+    // Detect a "fresh start": user sent previous message, field was cleared by the app,
+    // and now user is typing something new. originalText is stale from the old message.
+    // If current text is much shorter than original, it's a new message, not a deletion.
+    if (originalText.length > 0 && currentText.length < originalText.length * 0.5) {
+      // Fresh message — reset state
+      originalText = currentText;
+      lastTranslated = '';
+      isTranslating = false;
+      clearTimeout(typingTimer);
+    }
+
     if (currentText.length < originalText.length) { originalText = currentText; clearTimeout(typingTimer); return; }
-    if (currentText.length === 0) { originalText = ''; lastTranslated = ''; clearTimeout(typingTimer); return; }
 
     if (currentText !== lastTranslated && currentText.length >= 2) {
-      updateBadgeUI('typing');
       clearTimeout(typingTimer);
-
       const mode = settings.triggerMode || 'timer';
-      const lastChar = currentText.slice(-1);
 
-      if (mode === 'pro') {
-        if (['.', '!', '?', '\n'].includes(lastChar)) {
-          translate(el, currentText, true);
-        }
-      } else if (mode === 'rapid') {
-        const delay = [' ', '.', ',', '!', '?', '\n'].includes(lastChar) ? 50 : 1000;
-        typingTimer = setTimeout(() => translate(el, currentText, delay === 50), delay);
-      } else {
-        // Timer mode (default)
-        typingTimer = setTimeout(() => translate(el, currentText), settings.delay);
+      if (mode === 'timer') {
+        // ONLY timer mode auto-translates
+        updateBadgeUI('typing');
+        typingTimer = setTimeout(() => translate(el, currentText), 1000);
       }
+      // Any other mode: do nothing here, wait for explicit trigger (Ctrl+Enter etc.)
     }
   }
 
@@ -597,6 +691,7 @@
   document.addEventListener('focus', resetOriginal, true);
 
   // === CONVERSATION MODE ===
+
   function startConversationMode() {
     if (observer) observer.disconnect();
 
@@ -655,7 +750,7 @@
     chrome.runtime.sendMessage({
       action: 'translate',
       text: hugeText,
-      targetLang: settings.myLang
+      targetLang: settings.myLang,
     }, (res) => {
       updateBadgeUI('on');
       if (chrome.runtime.lastError || !res?.translation) return;
@@ -690,26 +785,30 @@
 
     const root = rootNode.nodeType === Node.ELEMENT_NODE ? rootNode : document.body;
 
+    function isTextNodeValid(node) {
+      const parent = node.parentNode;
+      if (!parent) return false;
+      if (SKIP_TAGS.has(parent.tagName)) return false;
+      if (parent.isContentEditable) return false;
+      if (parent.closest && parent.closest('[contenteditable="true"]')) return false;
+      if (parent.getAttribute?.('translate') === 'no' || parent.classList?.contains('notranslate')) {
+        return false;
+      }
+      return true;
+    }
+
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
-        const parent = node.parentNode;
-        if (!parent) return NodeFilter.FILTER_REJECT;
-        if (SKIP_TAGS.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
-        if (parent.isContentEditable) return NodeFilter.FILTER_REJECT;
-        if (parent.getAttribute?.('translate') === 'no' || parent.classList?.contains('notranslate')) {
-          return NodeFilter.FILTER_REJECT;
-        }
-
+        if (!isTextNodeValid(node)) return NodeFilter.FILTER_REJECT;
         const text = node.nodeValue.trim();
         if (text.length < 3 || /^\d+$/.test(text)) return NodeFilter.FILTER_SKIP;
         if (translatedMap.has(node) || processedNodes.has(node)) return NodeFilter.FILTER_REJECT;
-
         return NodeFilter.FILTER_ACCEPT;
       }
     });
 
     if (rootNode.nodeType === Node.TEXT_NODE) {
-      if (rootNode.nodeValue.trim().length >= 3 && !processedNodes.has(rootNode)) {
+      if (isTextNodeValid(rootNode) && rootNode.nodeValue.trim().length >= 3 && !processedNodes.has(rootNode)) {
         processedNodes.add(rootNode);
         queueNodeForTranslation(rootNode, rootNode.nodeValue.trim());
       }
@@ -796,7 +895,7 @@
     // Translate via background
     try {
       chrome.runtime.sendMessage(
-        { action: 'translate', text: selectedText, targetLang: settings.myLang || 'fr' },
+        { action: 'translate', text: selectedText, targetLang: settings.myLang || 'fr', isIncoming: true },
         (res) => {
           if (!tooltipPopup || !tooltipPopup.isConnected) return;
           if (chrome.runtime.lastError || !res?.translation) {
@@ -1008,11 +1107,14 @@
     const existingBadge = document.getElementById('tr-badge');
     if (existingBadge) existingBadge.remove();
 
-    if (document.getElementById('tr-styles')) return;
-    (document.head || document.documentElement).appendChild(style);
+    if (!document.getElementById('tr-styles')) {
+      (document.head || document.documentElement).appendChild(style);
+    }
+
     (document.body || document.documentElement).appendChild(badge);
+    updateBadgeUI('off'); // Start hidden; loadConfig will show if enabled
     loadConfig();
-    if (DEBUG) console.log('🌐 ConFluent v3.2 | Ready');
+    if (DEBUG) console.log('🌐 ConFluent v3.3 | Ready');
   }
 
   if (document.readyState === 'complete') init();
