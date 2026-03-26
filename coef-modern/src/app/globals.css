@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  /* === COEF-RESSOURCES OFFICIAL PALETTE === */
+  --brand-blue:   #3C508B;  /* Couleur principale — titres, éléments forts, fond navbar */
+  --brand-green:  #6FA045;  /* Couleur secondaire — accents, boutons, icônes */
+  --brand-yellow: #DDD334;  /* Couleur d'accentuation — highlights, hover, séparateurs */
+
+  /* Derived / Contextual */
+  --background:   #F7F8FA;  /* Fond neutre clair */
+  --foreground:   #1E2A4A;  /* Texte sombre dérivé du bleu */
+  --brand-sand:   #F7F8FA;  /* Fond clair neutre */
+}
+
+@theme inline {
+  --color-brand-blue:   var(--brand-blue);
+  --color-brand-green:  var(--brand-green);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-sand:   var(--brand-sand);
+
+  /* Legacy compatibility aliases (old code uses these) */
+  --color-brand-forest: var(--brand-blue);
+  --color-brand-gold:   var(--brand-yellow);
+
+  --font-heading: var(--font-playfair), serif;
+  --font-body: var(--font-inter), sans-serif;
+}
+
+.serif-heading {
+  font-family: var(--font-playfair), serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0) }
+  10% { transform: translate(-5%, -10%) }
+  20% { transform: translate(-15%, 5%) }
+  30% { transform: translate(7%, -25%) }
+  40% { transform: translate(-5%, 25%) }
+  50% { transform: translate(-15%, 10%) }
+  60% { transform: translate(15%, 0%) }
+  70% { transform: translate(0%, 15%) }
+  80% { transform: translate(3%, 35%) }
+  90% { transform: translate(-10%, 10%) }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.glass-card {
+  @apply bg-white/40 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(60,80,139,0.05)];
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-brand-blue to-brand-green;
+}
+
+.noise-overlay {
+  position: fixed;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9999;
+  animation: grain 8s steps(10) infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-brand-sand;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-blue/20 rounded-full border-4 border-brand-sand hover:bg-brand-green transition-colors;
+}
