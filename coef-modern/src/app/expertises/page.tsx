@@ -27,8 +27,8 @@ const SERVICES = [
     title: "Ressources Humaines",
     desc: "Optimisation de la performance par le capital humain et gestion stratégique des talents.",
     icon: Users,
-    color: "bg-brand-forest/5 text-brand-forest",
-    accent: "bg-brand-gold",
+    color: "bg-brand-blue/5 text-brand-blue",
+    accent: "bg-brand-yellow",
     stat: { label: "Taux de rétention", value: "98%" },
     features: ["Audit & Ingénierie RH", "Recrutement de dirigeants", "Développement des compétences", "Accompagnement de carrière"]
   },
@@ -37,8 +37,8 @@ const SERVICES = [
     title: "Organisation & Conseil",
     desc: "Transformation structurelle et excellence opérationnelle pour les institutions.",
     icon: Briefcase,
-    color: "bg-brand-forest/5 text-brand-forest",
-    accent: "bg-brand-gold",
+    color: "bg-brand-blue/5 text-brand-blue",
+    accent: "bg-brand-yellow",
     stat: { label: "Missions d'audit", value: "150+" },
     features: ["Schémas directeurs", "Manuel de procédures", "Gouvernance & Stratégie", "Conduite du changement"]
   },
@@ -47,8 +47,8 @@ const SERVICES = [
     title: "Études & Impact",
     desc: "Analyses de précision et évaluation rigoureuse de vos impacts sociaux.",
     icon: ClipboardCheck,
-    color: "bg-brand-forest/5 text-brand-forest",
-    accent: "bg-brand-gold",
+    color: "bg-brand-blue/5 text-brand-blue",
+    accent: "bg-brand-yellow",
     stat: { label: "Experts mobilisés", value: "120+" },
     features: ["Études socio-économiques", "Suivi & Évaluation (MSE)", "Études d'impact environnemental", "Capitalisation d'expériences"]
   },
@@ -57,8 +57,8 @@ const SERVICES = [
     title: "Données & Opinion",
     desc: "La voix de la donnée pour éclairer les décisions stratégiques à Madagascar.",
     icon: BarChart3,
-    color: "bg-brand-forest/5 text-brand-forest",
-    accent: "bg-brand-gold",
+    color: "bg-brand-blue/5 text-brand-blue",
+    accent: "bg-brand-yellow",
     stat: { label: "Fiabilité statistique", value: "95%" },
     features: ["Baromètres d'opinion", "Collecte API (Afrobarometer)", "Analyses de satisfaction", "Veille stratégique"]
   }
@@ -107,19 +107,19 @@ function MagneticButton({ children, className, ...props }: any) {
 
 function AccordionItem({ faq, isOpen, onClick }: { faq: any, isOpen: boolean, onClick: () => void }) {
   return (
-    <div className={cn("border-b border-brand-forest/10 transition-colors duration-700", isOpen ? "bg-white/40" : "hover:bg-white/20")}>
+    <div className={cn("border-b border-brand-blue/10 transition-colors duration-700", isOpen ? "bg-white/40" : "hover:bg-white/20")}>
       <button onClick={onClick} className="w-full flex items-center justify-between py-10 px-8 text-left focus:outline-none group">
-        <h4 className={cn("text-xl md:text-2xl font-black font-heading transition-colors duration-500", isOpen ? "text-brand-forest" : "text-brand-forest/40 group-hover:text-brand-forest")}>
+        <h4 className={cn("text-xl md:text-2xl font-black font-heading transition-colors duration-500", isOpen ? "text-brand-blue" : "text-brand-blue/40 group-hover:text-brand-blue")}>
           {faq.q}
         </h4>
-        <div className={cn("shrink-0 h-8 w-8 rounded-full border border-brand-forest/10 flex items-center justify-center transition-all duration-500", isOpen ? "bg-brand-gold border-brand-gold text-white rotate-180 shadow-lg" : "bg-transparent text-brand-forest group-hover:border-brand-forest")}>
+        <div className={cn("shrink-0 h-8 w-8 rounded-full border border-brand-blue/10 flex items-center justify-center transition-all duration-500", isOpen ? "bg-brand-yellow border-brand-yellow text-white rotate-180 shadow-lg" : "bg-transparent text-brand-blue group-hover:border-brand-blue")}>
           {isOpen ? <Minus size={14} /> : <Plus size={14} />}
         </div>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.5, ease: EASING }}>
-            <div className="px-10 pb-12 text-brand-forest/70 font-medium leading-relaxed max-w-3xl">
+            <div className="px-10 pb-12 text-brand-blue/70 font-medium leading-relaxed max-w-3xl">
               {faq.a}
             </div>
           </motion.div>
@@ -134,26 +134,26 @@ export default function Services() {
   const containerRef = useRef<HTMLDivElement>(null);
   
   return (
-    <div ref={containerRef} className="pt-32 pb-40 min-h-screen bg-brand-sand/30">
+    <div ref={containerRef} className="pt-44 pb-24 min-h-screen bg-brand-sand/30">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* HERO - Statutory & Minimalist */}
-        <motion.div initial="hidden" animate="show" variants={staggerContainer} className="mb-40 mt-16 text-center max-w-5xl mx-auto">
+        <motion.div initial="hidden" animate="show" variants={staggerContainer} className="mb-24 mt-8 text-center max-w-5xl mx-auto">
           <motion.div variants={fadeInUp} className="mb-12 flex items-center justify-center gap-6">
-            <span className="h-px w-12 bg-brand-gold" />
-            <span className="text-[10px] font-black uppercase tracking-[0.6em] text-brand-gold">Solutions Statutaires</span>
-            <span className="h-px w-12 bg-brand-gold" />
+            <span className="h-px w-12 bg-brand-yellow" />
+            <span className="text-[10px] font-black uppercase tracking-[0.6em] text-brand-yellow">Solutions Statutaires</span>
+            <span className="h-px w-12 bg-brand-yellow" />
           </motion.div>
-          <motion.h1 variants={fadeInUp} className="font-heading text-6xl md:text-[100px] font-black text-brand-forest leading-[0.9] mb-12 tracking-tighter">
-            Architectes du <br /> <span className="serif-heading italic font-normal text-brand-gold">Capital Humain.</span>
+          <motion.h1 variants={fadeInUp} className="font-heading text-6xl md:text-[100px] font-black text-brand-blue leading-[0.9] mb-12 tracking-tighter">
+            Architectes du <br /> <span className="serif-heading italic font-normal text-brand-yellow">Capital Humain.</span>
           </motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl md:text-2xl text-brand-forest/60 leading-relaxed font-medium mx-auto max-w-2xl px-4">
+          <motion.p variants={fadeInUp} className="text-xl md:text-2xl text-brand-blue/60 leading-relaxed font-medium mx-auto max-w-2xl px-4">
             Depuis 24 ans, nous transformons les organisations par l&apos;excellence méthodologique. Un accompagnement sur-mesure pour les acteurs leaders à Madagascar.
           </motion.p>
         </motion.div>
 
         {/* STICKY SERVICES - Prestige Style */}
-        <div className="relative space-y-12 pb-32">
+        <div className="relative space-y-8 pb-16">
           {SERVICES.map((service, idx) => (
             <motion.div 
               key={service.id}
@@ -161,35 +161,35 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1.2, ease: EASING }}
-              className="sticky top-32 bg-white rounded-none border-l-[10px] border-brand-gold p-10 md:p-20 shadow-[40px_40px_100px_rgba(10,46,42,0.05)] border-y border-r border-brand-forest/5 flex flex-col lg:flex-row gap-20 items-center overflow-hidden"
+              className="sticky top-32 bg-white rounded-none border-l-[10px] border-brand-yellow p-10 md:p-20 shadow-[40px_40px_100px_rgba(10,46,42,0.05)] border-y border-r border-brand-blue/5 flex flex-col lg:flex-row gap-20 items-center overflow-hidden"
               style={{ zIndex: idx }}
             >
               <div className="relative shrink-0 flex flex-col items-center">
-                <div className={cn("h-48 w-48 rounded-sm bg-brand-forest flex items-center justify-center text-brand-gold")}>
+                <div className={cn("h-48 w-48 rounded-sm bg-brand-blue flex items-center justify-center text-brand-yellow")}>
                   <service.icon size={80} strokeWidth={1} />
                 </div>
-                <div className="mt-10 border-t border-brand-forest/10 pt-6 w-full text-center">
-                  <p className="text-[9px] font-black uppercase text-brand-gold tracking-[0.4em] mb-2">{service.stat.label}</p>
-                  <p className="text-4xl font-heading font-black text-brand-forest">{service.stat.value}</p>
+                <div className="mt-10 border-t border-brand-blue/10 pt-6 w-full text-center">
+                  <p className="text-[9px] font-black uppercase text-brand-yellow tracking-[0.4em] mb-2">{service.stat.label}</p>
+                  <p className="text-4xl font-heading font-black text-brand-blue">{service.stat.value}</p>
                 </div>
               </div>
               
               <div className="flex-1 relative z-10">
-                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-gold mb-6">Pôle d&apos;expertise {idx + 1}</p>
-                <h3 className="font-heading text-4xl md:text-6xl font-black text-brand-forest mb-8 tracking-tighter leading-tight">{service.title}</h3>
-                <p className="text-brand-forest/60 text-xl font-medium mb-12 max-w-2xl leading-relaxed">{service.desc}</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-yellow mb-6">Pôle d&apos;expertise {idx + 1}</p>
+                <h3 className="font-heading text-4xl md:text-6xl font-black text-brand-blue mb-8 tracking-tighter leading-tight">{service.title}</h3>
+                <p className="text-brand-blue/60 text-xl font-medium mb-12 max-w-2xl leading-relaxed">{service.desc}</p>
                 
                 <div className="grid md:grid-cols-2 gap-y-8 gap-x-12 mb-16">
                   {service.features.map((feature, fIdx) => (
                     <div key={fIdx} className="flex items-center gap-6 group">
-                      <div className="h-px w-6 bg-brand-gold group-hover:w-10 transition-all duration-500" />
-                      <span className="text-brand-forest font-bold text-sm tracking-wide uppercase italic">{feature}</span>
+                      <div className="h-px w-6 bg-brand-yellow group-hover:w-10 transition-all duration-500" />
+                      <span className="text-brand-blue font-bold text-sm tracking-wide uppercase italic">{feature}</span>
                     </div>
                   ))}
                 </div>
 
                 <Link href={`/contact?service=${service.id}`}>
-                  <MagneticButton className="bg-brand-forest text-white px-10 py-5 rounded-none font-bold text-[11px] tracking-widest uppercase hover:bg-brand-gold transition-colors duration-500 shadow-2xl flex items-center gap-6">
+                  <MagneticButton className="bg-brand-blue text-white px-10 py-5 rounded-none font-bold text-[11px] tracking-widest uppercase hover:bg-brand-yellow transition-colors duration-500 shadow-2xl flex items-center gap-6">
                     Lancer la mission <ArrowRight size={18} />
                   </MagneticButton>
                 </Link>
@@ -204,18 +204,18 @@ export default function Services() {
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="mt-40 max-w-5xl mx-auto overflow-hidden"
+          className="mt-20 max-w-5xl mx-auto overflow-hidden"
         >
           <div className="mb-20 text-center relative overflow-hidden">
              <div className="inline-flex items-center gap-4 mb-10">
-               <span className="h-px w-8 bg-brand-gold/30" />
-               <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-gold">Renseignements</p>
-               <span className="h-px w-8 bg-brand-gold/30" />
+               <span className="h-px w-8 bg-brand-yellow/30" />
+               <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-yellow">Renseignements</p>
+               <span className="h-px w-8 bg-brand-yellow/30" />
              </div>
-             <h2 className="font-heading text-5xl md:text-7xl font-black text-brand-forest tracking-tighter">Votre stratégie, <br /> <span className="serif-heading italic font-normal">nos réponses.</span></h2>
+             <h2 className="font-heading text-5xl md:text-7xl font-black text-brand-blue tracking-tighter">Votre stratégie, <br /> <span className="serif-heading italic font-normal">nos réponses.</span></h2>
           </div>
           
-          <div className="flex flex-col bg-white border-t border-brand-forest/10">
+          <div className="flex flex-col bg-white border-t border-brand-blue/10">
             {FAQS.map((faq, idx) => (
               <AccordionItem 
                 key={idx} 

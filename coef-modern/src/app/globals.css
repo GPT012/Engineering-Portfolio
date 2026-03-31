@@ -78,11 +78,11 @@ h1, h2, h3, h4, h5, h6 {
   left: -100%;
   width: 300%;
   height: 300%;
-  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-  opacity: 0.04;
+  opacity: 0.03;
   pointer-events: none;
   z-index: 9999;
   animation: grain 8s steps(10) infinite;
+  background: repeating-conic-gradient(rgba(60,80,139,0.03) 0% 25%, transparent 0% 50%) 0 0 / 3px 3px;
 }
 
 html {

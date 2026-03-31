@@ -136,12 +136,12 @@ function MagneticButton({ children, className, ...props }: any) {
 
 // Section Header
 const SectionHeader = ({ title, subtitle, light = false }: { title: string, subtitle?: string, light?: boolean }) => (
-  <motion.div variants={fadeInUp} className="mb-16">
-    <h2 className={cn("font-heading text-4xl font-bold md:text-5xl", light ? "text-white" : "text-brand-forest")}>
+  <motion.div variants={fadeInUp} className="mb-12">
+    <h2 className={cn("font-heading text-4xl font-bold md:text-5xl", light ? "text-white" : "text-brand-blue")}>
       {title}
     </h2>
     {subtitle && (
-      <p className={cn("mt-4 text-lg", light ? "text-white/60" : "text-brand-forest/60")}>
+      <p className={cn("mt-4 text-lg", light ? "text-white/60" : "text-brand-blue/60")}>
         {subtitle}
       </p>
     )}
@@ -156,10 +156,10 @@ export default function Home() {
   const heroImageScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.1]);
 
   return (
-    <div ref={containerRef} className="relative min-h-screen selection:bg-brand-green selection:text-brand-forest">
+    <div ref={containerRef} className="relative min-h-screen selection:bg-brand-green selection:text-brand-blue">
       
       {/* 1. HERO SECTION - Deep Forest Inversion */}
-      <section className="relative flex min-h-[95vh] items-center pt-32 pb-24 overflow-hidden bg-brand-forest">
+      <section className="relative flex min-h-[95vh] items-center pt-44 pb-24 overflow-hidden bg-brand-blue">
         {/* Subtle Background Pattern - Prestige Grid */}
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
           <svg width="100%" height="100%">
@@ -239,14 +239,14 @@ export default function Home() {
                   priority
                 />
               </motion.div>
-              <div className="absolute inset-0 bg-brand-forest/20 opacity-60 group-hover:opacity-0 transition-opacity duration-1000" />
+              <div className="absolute inset-0 bg-brand-blue/20 opacity-60 group-hover:opacity-0 transition-opacity duration-1000" />
             </div>
             
             {/* Floating Achievement Badge - Minimalist Inverted */}
             <motion.div 
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
-              className="absolute -bottom-10 -left-10 bg-brand-forest p-10 shadow-2xl border-l-[6px] border-brand-gold"
+              className="absolute -bottom-10 -left-10 bg-brand-blue p-10 shadow-2xl border-l-[6px] border-brand-yellow"
             >
               <div className="relative z-10">
                 <p className="text-4xl font-heading font-black text-white mb-2 tracking-tight">Afrobarometer</p>
@@ -259,14 +259,14 @@ export default function Home() {
       </section>
 
       {/* 2. STATS BAR (Sand Version for Contrast) */}
-      <section className="relative z-20 bg-brand-sand py-24 px-6 overflow-hidden">
+      <section className="relative z-20 bg-brand-sand py-12 px-6 overflow-hidden">
         <div className="mx-auto max-w-7xl relative z-10">
           <motion.div 
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="grid grid-cols-2 gap-12 md:grid-cols-4"
+            className="grid grid-cols-2 gap-8 md:grid-cols-4"
           >
             {STATS.map((stat, idx) => (
               <motion.div 
@@ -274,11 +274,11 @@ export default function Home() {
                 variants={fadeInUp}
                 className="group relative text-center md:text-left"
               >
-                <p className="font-heading text-6xl font-black text-brand-forest md:text-7xl">
+                <p className="font-heading text-5xl font-black text-brand-blue md:text-6xl">
                   <AnimatedNumber value={stat.value} />{stat.suffix}
                 </p>
-                <div className="h-px w-12 bg-brand-forest/10 mt-4 mb-4 mx-auto md:mx-0 group-hover:bg-brand-gold transition-colors" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-forest/40 group-hover:text-brand-forest transition-colors">
+                <div className="h-px w-12 bg-brand-blue/10 mt-3 mb-3 mx-auto md:mx-0 group-hover:bg-brand-yellow transition-colors" />
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-blue/40 group-hover:text-brand-blue transition-colors">
                   {stat.label}
                 </p>
               </motion.div>
@@ -288,19 +288,19 @@ export default function Home() {
       </section>
 
       {/* 3. TRUST BAR (Sand & Dark) */}
-      <section className="bg-white py-20 border-b border-brand-sand overflow-hidden">
+      <section className="bg-white py-12 border-b border-brand-sand overflow-hidden">
         <div className="relative flex select-none overflow-hidden items-center group">
           <motion.div 
             animate={{ x: ["0%", "-50%"] }}
             transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
-            className="flex min-w-max shrink-0 items-center justify-around gap-20 px-10"
+            className="flex min-w-max shrink-0 items-center justify-around gap-16 px-8"
           >
             {[...Array(2)].fill([
               "Banque Mondiale", "AFD", "UNICEF", "PNUD", "Union Européenne", "AfroBarometer", 
               "Orange", "Star", "Vivo Energy", "Telma"
             ]).flat().map((partner, i) => (
-              <div key={i} className="flex flex-col items-center gap-2 grayscale-0 opacity-40 hover:opacity-100 transition-all duration-300">
-                <div className="h-12 flex items-center text-3xl font-heading font-black tracking-tighter text-brand-forest">
+              <div key={i} className="flex flex-col items-center gap-2 opacity-40 hover:opacity-100 transition-all duration-300">
+                <div className="h-10 flex items-center text-2xl font-heading font-black tracking-tighter text-brand-blue">
                   {partner}
                 </div>
               </div>
@@ -310,7 +310,7 @@ export default function Home() {
       </section>
 
       {/* 4. EXPERTISES GRID (Bento-Grid - Light & Sharp) */}
-      <section id="expertises" className="py-40 px-6 bg-brand-sand/30 relative">
+      <section id="expertises" className="py-20 px-6 bg-brand-sand/30 relative">
         <div className="mx-auto max-w-7xl relative z-10">
           <motion.div
             initial="hidden"
@@ -323,34 +323,34 @@ export default function Home() {
               subtitle="Des solutions intégrées pour répondre aux enjeux complexes des organisations malgaches." 
             />
             
-            <div className="grid gap-8 md:grid-cols-3 auto-rows-[250px] md:auto-rows-[350px]">
+            <div className="grid gap-6 md:grid-cols-3 auto-rows-[220px] md:auto-rows-[300px]">
               {EXPERTISES.map((exp, idx) => (
                 <motion.div
                   key={idx}
                   variants={fadeInUp}
                   className={cn(
-                    "group relative flex flex-col rounded-sm bg-white p-10 border border-brand-forest/5 overflow-hidden hover:shadow-2xl hover:border-brand-gold/30 transition-all duration-700",
+                    "group relative flex flex-col rounded-sm bg-white p-8 border border-brand-blue/5 overflow-hidden hover:shadow-2xl hover:border-brand-yellow/30 transition-all duration-700",
                     exp.span
                   )}
                 >
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-start justify-between mb-auto">
-                      <div className={cn("text-brand-forest transition-transform group-hover:scale-110 duration-700 ease-[cubic-bezier(0.85,0,0.15,1)]")}>
-                        <exp.icon size={32} strokeWidth={1.5} />
+                      <div className={cn("text-brand-blue transition-transform group-hover:scale-110 duration-700 ease-[cubic-bezier(0.85,0,0.15,1)]")}>
+                        <exp.icon size={28} strokeWidth={1.5} />
                       </div>
-                      <div className="h-10 w-10 flex items-center justify-center rounded-full border border-brand-forest/10 text-brand-forest/20 group-hover:border-brand-gold group-hover:text-brand-gold transition-all duration-300">
-                        <ArrowRight size={18} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                      <div className="h-8 w-8 flex items-center justify-center rounded-full border border-brand-blue/10 text-brand-blue/20 group-hover:border-brand-yellow group-hover:text-brand-yellow transition-all duration-300">
+                        <ArrowRight size={16} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
                       </div>
                     </div>
 
-                    <div className="mt-12">
-                      <p className="text-[10px] font-black tracking-[.4em] text-brand-gold uppercase mb-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+                    <div className="mt-8">
+                      <p className="text-[9px] font-black tracking-[.4em] text-brand-yellow uppercase mb-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                         Expertise • 24y
                       </p>
-                      <h3 className="mb-4 font-heading text-3xl font-black text-brand-forest leading-tight">
+                      <h3 className="mb-3 font-heading text-2xl font-black text-brand-blue leading-tight">
                         {exp.title}
                       </h3>
-                      <p className="text-[15px] leading-relaxed text-brand-forest/50 max-w-md group-hover:text-brand-forest/80 transition-colors">
+                      <p className="text-[14px] leading-relaxed text-brand-blue/50 max-w-md group-hover:text-brand-blue/80 transition-colors">
                         {exp.desc}
                       </p>
                     </div>
@@ -363,8 +363,8 @@ export default function Home() {
       </section>
 
       {/* 5. SOCIAL PROOF (Deep Forest Contrast) */}
-      <section className="py-40 bg-brand-forest relative overflow-hidden border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6 relative z-10 mb-20">
+      <section className="py-20 bg-brand-blue relative overflow-hidden border-t border-white/5">
+        <div className="mx-auto max-w-7xl px-6 relative z-10 mb-12">
           <SectionHeader 
             title="Preuve par l'Impact." 
             subtitle="Ils ont choisi la rigueur et l'excellence locale."
@@ -372,12 +372,12 @@ export default function Home() {
           />
         </div>
 
-        <div className="relative w-full overflow-hidden flex pb-20">
+        <div className="relative w-full overflow-hidden flex pb-12">
           <motion.div 
             drag="x"
             dragConstraints={{ right: 600, left: -1500 }}
             whileTap={{ cursor: "grabbing" }}
-            className="flex gap-10 px-6 cursor-grab active:cursor-grabbing"
+            className="flex gap-8 px-6 cursor-grab active:cursor-grabbing"
           >
             {[
               {
@@ -403,15 +403,15 @@ export default function Home() {
             ].map((t, idx) => (
               <motion.div 
                 key={idx}
-                className="w-[350px] md:w-[500px] shrink-0 bg-white/5 p-12 rounded-sm border border-white/10 hover:border-brand-gold/30 transition-all duration-700 flex flex-col justify-between"
+                className="w-[300px] md:w-[400px] shrink-0 bg-white/5 p-8 rounded-sm border border-white/10 hover:border-brand-gold/30 transition-all duration-700 flex flex-col justify-between"
               >
                 <div>
-                  <div className="h-px w-12 bg-brand-gold mb-10" />
-                  <p className="text-white/80 text-2xl font-medium serif-heading leading-relaxed italic mb-12">"{t.text}"</p>
+                  <div className="h-px w-10 bg-brand-gold mb-8" />
+                  <p className="text-white/80 text-xl font-medium serif-heading leading-relaxed italic mb-8">"{t.text}"</p>
                 </div>
-                <div className="pt-8 border-t border-white/5">
-                  <p className="text-brand-gold font-black text-xs uppercase tracking-[0.3em] mb-2">{t.source}</p>
-                  <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.2em]">{t.author}</p>
+                <div className="pt-6 border-t border-white/5">
+                  <p className="text-brand-gold font-black text-[10px] uppercase tracking-[0.3em] mb-1">{t.source}</p>
+                  <p className="text-white/30 text-[9px] font-bold uppercase tracking-[0.2em]">{t.author}</p>
                 </div>
               </motion.div>
             ))}
@@ -420,8 +420,8 @@ export default function Home() {
       </section>
 
       {/* 6. CTA FINAL */}
-      <section className="py-32 px-6 bg-brand-sand">
-        <div className="mx-auto max-w-5xl rounded-[60px] bg-brand-green p-12 md:p-24 text-center shadow-2xl relative overflow-hidden">
+      <section className="py-16 px-6 bg-brand-sand">
+        <div className="mx-auto max-w-5xl rounded-[40px] bg-brand-green p-10 md:p-16 text-center shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <svg width="100%" height="100%">
               <pattern id="diagonal" width="40" height="40" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
@@ -436,7 +436,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-heading text-5xl font-black text-brand-forest md:text-7xl mb-8 leading-tight"
+              className="font-heading text-4xl font-black text-brand-blue md:text-6xl mb-6 leading-tight"
             >
               Prêt à transformer <br /> votre organisation ?
             </motion.h2>
@@ -444,12 +444,12 @@ export default function Home() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="mx-auto mb-16 max-w-lg text-xl font-medium text-brand-forest/80"
+              className="mx-auto mb-10 max-w-lg text-lg font-medium text-brand-blue/80"
             >
               Parlons de vos défis et construisons ensemble des solutions durables.
             </motion.p>
             <Link href="/contact">
-              <MagneticButton className="rounded-full bg-brand-forest px-14 py-6 font-black text-white shadow-xl transition-all hover:bg-white hover:text-brand-forest text-lg">
+              <MagneticButton className="rounded-full bg-brand-blue px-14 py-6 font-black text-white shadow-xl transition-all hover:bg-white hover:text-brand-blue text-lg">
                 Démarrer un projet
               </MagneticButton>
             </Link>
