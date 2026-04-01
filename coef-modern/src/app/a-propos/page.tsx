@@ -84,10 +84,10 @@ export default function About() {
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden bg-brand-blue">
         <motion.div style={{ y: heroImageY }} className="absolute inset-0 w-full h-[150%] -top-1/4">
           <Image 
-            src="/images/about-office.png" 
+            src="/images/portfolio/IMG-20241104-WA0001.jpg" 
             alt="Signature CoefRessources" 
             fill 
-            className="object-cover grayscale opacity-40 brightness-50"
+            className="object-cover opacity-60 brightness-75 transition-all duration-1000"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/60 via-transparent to-brand-blue" />

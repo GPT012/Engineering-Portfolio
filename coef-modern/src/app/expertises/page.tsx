@@ -7,6 +7,7 @@ import {
   ArrowRight, Plus, Minus
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 const EASING: [number, number, number, number] = [0.85, 0, 0.15, 1];
@@ -161,11 +162,27 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1.2, ease: EASING }}
-              className="sticky top-32 bg-white rounded-none border-l-[10px] border-brand-yellow p-10 md:p-20 shadow-[40px_40px_100px_rgba(10,46,42,0.05)] border-y border-r border-brand-blue/5 flex flex-col lg:flex-row gap-20 items-center overflow-hidden"
+              className="sticky top-32 bg-white rounded-none border-l-[10px] border-brand-yellow p-10 md:p-20 shadow-[40px_40px_100px_rgba(10,46,42,0.05)] border-y border-r border-brand-blue/5 flex flex-col lg:flex-row gap-20 items-center overflow-hidden group"
               style={{ zIndex: idx }}
             >
-              <div className="relative shrink-0 flex flex-col items-center">
-                <div className={cn("h-48 w-48 rounded-sm bg-brand-blue flex items-center justify-center text-brand-yellow")}>
+              {/* AUTHENTIC BG IMAGE */}
+              <div className="absolute inset-0 z-0 pointer-events-none">
+                <Image 
+                  src={[
+                    "/images/portfolio/IMG-20241014-WA0027.jpg",
+                    "/images/portfolio/20230520_100240.jpg",
+                    "/images/portfolio/IMG_5938.JPG",
+                    "/images/portfolio/AFR_4902.JPG"
+                  ][idx]}
+                  alt="Background"
+                  fill
+                  className="object-cover opacity-[0.03] grayscale transition-all duration-[3s] group-hover:opacity-[0.07] group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent" />
+              </div>
+
+              <div className="relative shrink-0 flex flex-col items-center z-10">
+                <div className={cn("h-48 w-48 rounded-sm bg-brand-blue flex items-center justify-center text-brand-yellow shadow-2xl")}>
                   <service.icon size={80} strokeWidth={1} />
                 </div>
                 <div className="mt-10 border-t border-brand-blue/10 pt-6 w-full text-center">
@@ -181,8 +198,8 @@ export default function Services() {
                 
                 <div className="grid md:grid-cols-2 gap-y-8 gap-x-12 mb-16">
                   {service.features.map((feature, fIdx) => (
-                    <div key={fIdx} className="flex items-center gap-6 group">
-                      <div className="h-px w-6 bg-brand-yellow group-hover:w-10 transition-all duration-500" />
+                    <div key={fIdx} className="flex items-center gap-6 group/item">
+                      <div className="h-px w-6 bg-brand-yellow group-hover/item:w-10 transition-all duration-500" />
                       <span className="text-brand-blue font-bold text-sm tracking-wide uppercase italic">{feature}</span>
                     </div>
                   ))}
