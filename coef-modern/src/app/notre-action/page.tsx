@@ -41,15 +41,18 @@ export default function NotreActionPage() {
             <p className="text-xl md:text-2xl text-white/80 font-medium leading-relaxed italic mb-8">
               "L'excellence méthodologique ne s'écrit pas dans des bureaux, elle se forge dans l'immensité du terrain malgache."
             </p>
-            <div className="flex flex-wrap items-center gap-8 text-white/50 text-[10px] uppercase font-black tracking-widest border-t border-white/10 pt-8">
-              <div className="flex items-center gap-3">
-                <span className="text-brand-yellow text-lg">22</span> Zones d'Action
+            <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-white/10 mt-4">
+              <div className="flex flex-col gap-1 px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex-1 min-w-[140px]">
+                <span className="text-brand-yellow text-3xl font-heading font-black">22</span>
+                <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-80">Zones d'Action</span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-brand-yellow text-lg">150+</span> Enquêteurs
+              <div className="flex flex-col gap-1 px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex-1 min-w-[140px]">
+                <span className="text-brand-yellow text-3xl font-heading font-black">150+</span>
+                <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-80">Enquêteurs</span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-brand-yellow text-lg">100%</span> Madagascar
+              <div className="flex flex-col gap-1 px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex-1 min-w-[140px]">
+                <span className="text-brand-yellow text-3xl font-heading font-black">100%</span>
+                <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-80">Madagascar</span>
               </div>
             </div>
           </div>
