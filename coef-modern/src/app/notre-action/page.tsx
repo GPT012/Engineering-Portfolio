@@ -42,17 +42,17 @@ export default function NotreActionPage() {
               "L'excellence méthodologique ne s'écrit pas dans des bureaux, elle se forge dans l'immensité du terrain malgache."
             </p>
             <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-white/10 mt-4">
-              <div className="flex flex-col gap-1 px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex-1 min-w-[140px]">
-                <span className="text-brand-yellow text-3xl font-heading font-black">22</span>
-                <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-80">Zones d'Action</span>
+              <div className="flex flex-col gap-1 px-8 py-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-1 min-w-[160px] shadow-2xl">
+                <span className="text-brand-yellow text-4xl font-heading font-black">22</span>
+                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Zones d'Action</span>
               </div>
-              <div className="flex flex-col gap-1 px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex-1 min-w-[140px]">
-                <span className="text-brand-yellow text-3xl font-heading font-black">150+</span>
-                <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-80">Enquêteurs</span>
+              <div className="flex flex-col gap-1 px-8 py-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-1 min-w-[160px] shadow-2xl">
+                <span className="text-brand-yellow text-4xl font-heading font-black">150+</span>
+                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Enquêteurs</span>
               </div>
-              <div className="flex flex-col gap-1 px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex-1 min-w-[140px]">
-                <span className="text-brand-yellow text-3xl font-heading font-black">100%</span>
-                <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-80">Madagascar</span>
+              <div className="flex flex-col gap-1 px-8 py-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-1 min-w-[160px] shadow-2xl">
+                <span className="text-brand-yellow text-4xl font-heading font-black">100%</span>
+                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Madagascar</span>
               </div>
             </div>
           </div>
