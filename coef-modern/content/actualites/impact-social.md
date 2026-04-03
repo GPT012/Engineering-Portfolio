@@ -3,7 +3,7 @@ title: "Évaluer l'impact social de vos projets RSE : Guide méthodologique COEF
 date: "2024-01-05"
 category: "Gestion de Projets"
 summary: "Un guide pratique pour mesurer et maximiser l'impact social de vos initiatives de responsabilité sociétale."
-image: "/images/about-office.png"
+image: "/images/portfolio/IMG_5840.JPG"
 readTime: "6 min"
 featured: false
 ---

@@ -1,11 +1,12 @@
 // ===================================
 // ConFluent Swift — Settings View
-// Replaces: settings section in index.html
 // Native SwiftUI settings with macOS style
 // ===================================
 
 import SwiftUI
+import AppKit
 import ServiceManagement
+import CoreGraphics
 
 struct SettingsTabView: View {
     @Environment(AppState.self) private var state
@@ -41,7 +42,6 @@ struct SettingsTabView: View {
                 // Translation settings
                 settingsSection("TRANSLATION") {
                     VStack(spacing: 12) {
-                        // Target language
                         HStack {
                             Text("Translate to")
                                 .font(.system(size: 12))
@@ -56,7 +56,6 @@ struct SettingsTabView: View {
 
                         Divider()
 
-                        // Trigger mode
                         HStack {
                             Text("Trigger mode")
                                 .font(.system(size: 12))
@@ -69,7 +68,6 @@ struct SettingsTabView: View {
                             .frame(width: 180)
                         }
 
-                        // Delay slider (only for timer mode)
                         if state.triggerMode == .timer {
                             Divider()
                             VStack(alignment: .leading, spacing: 4) {
@@ -96,25 +94,56 @@ struct SettingsTabView: View {
 
                 // Dictation settings
                 settingsSection("DICTATION") {
-                    HStack {
-                        Text("Speech language")
-                            .font(.system(size: 12))
-                        Spacer()
-                        Picker("", selection: $state.dictationLang) {
-                            ForEach(SpeechLanguage.all) { lang in
-                                Text(lang.name).tag(lang.id)
+                    VStack(spacing: 12) {
+                        HStack {
+                            Text("Speech language")
+                                .font(.system(size: 12))
+                            Spacer()
+                            Picker("", selection: $state.dictationLang) {
+                                ForEach(SpeechLanguage.all) { lang in
+                                    Text(lang.name).tag(lang.id)
+                                }
                             }
+                            .frame(width: 150)
                         }
-                        .frame(width: 150)
+                        
+                        Divider()
+                        
+
+                        HStack {
+                            Text("Overlay Style")
+                                .font(.system(size: 12))
+                            Spacer()
+                            Picker("", selection: $state.dictationStyle) {
+                                ForEach(RecordingStyle.allCases) { style in
+                                    Text(style.label).tag(style)
+                                }
+                            }
+                            .frame(width: 190)
+                        }
                     }
                 }
 
-                // Shortcuts info
+                // Shortcuts
                 settingsSection("SHORTCUTS") {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 12) {
                         shortcutRow("Show/hide ConFluent", shortcut: "⌘⇧T")
                         Divider()
-                        shortcutRow("Hold dictation", shortcut: "⌥ + Space (hold)")
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Hold dictation")
+                                    .font(.system(size: 13, weight: .medium))
+                                Text("Hold this shortcut to speak")
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            ShortcutRecorderButton(
+                                keyCode: $state.dictationKeyCode,
+                                modifierRaw: $state.dictationModifierRaw,
+                                label: state.dictationShortcutLabel
+                            )
+                        }
                     }
                 }
 
@@ -176,6 +205,115 @@ struct SettingsTabView: View {
     }
 }
 
+// MARK: - Shortcut Recorder Button
+
+/// A button that, when clicked, enters "recording" mode.
+/// In recording mode, it uses a GLOBAL NSEvent monitor (not local)
+/// so it works even inside a popover. The CGEvent tap is paused
+/// while the popover is open (appFocused = true), so events reach us.
+struct ShortcutRecorderButton: View {
+    @Binding var keyCode: Int
+    @Binding var modifierRaw: UInt64
+    let label: String
+
+    @State private var isRecording = false
+    @State private var globalMonitor: Any?
+    @State private var localMonitor: Any?
+    @State private var escapeMonitor: Any?
+
+    var body: some View {
+        Button(action: {
+            if isRecording {
+                stopRecording()
+            } else {
+                startRecording()
+            }
+        }) {
+            HStack(spacing: 4) {
+                if isRecording {
+                    Image(systemName: "keyboard")
+                        .font(.system(size: 10))
+                    Text("Press keys...")
+                        .font(.system(size: 11, weight: .medium))
+                } else {
+                    Text(label)
+                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                }
+            }
+            .foregroundStyle(isRecording ? DesignSystem.Colors.primary : .primary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isRecording ? DesignSystem.Colors.primary.opacity(0.15) : Color.gray.opacity(0.1))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(
+                        isRecording ? DesignSystem.Colors.primary : Color.clear,
+                        lineWidth: 1.5
+                    )
+            )
+            .animation(.easeInOut(duration: 0.2), value: isRecording)
+        }
+        .buttonStyle(.plain)
+        .onDisappear {
+            stopRecording()
+        }
+    }
+
+    private func startRecording() {
+        isRecording = true
+        
+        // Tell the interceptor to stop consuming the dictation shortcut
+        NotificationCenter.default.post(name: NSNotification.Name("ShortcutRecordingStarted"), object: nil)
+
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            handleKeyEvent(event)
+            return nil
+        }
+
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
+            handleKeyEvent(event)
+        }
+    }
+
+    private func stopRecording() {
+        isRecording = false
+        if let m = localMonitor { NSEvent.removeMonitor(m); localMonitor = nil }
+        if let m = globalMonitor { NSEvent.removeMonitor(m); globalMonitor = nil }
+        
+        // Tell the interceptor to resume consuming the dictation shortcut
+        NotificationCenter.default.post(name: NSNotification.Name("ShortcutRecordingStopped"), object: nil)
+    }
+
+    private func handleKeyEvent(_ event: NSEvent) {
+        // Escape cancels recording
+        if event.keyCode == 53 {
+            DispatchQueue.main.async { stopRecording() }
+            return
+        }
+
+        let flags = event.modifierFlags
+        var rawMods: UInt64 = 0
+        if flags.contains(.command)  { rawMods |= CGEventFlags.maskCommand.rawValue }
+        if flags.contains(.option)   { rawMods |= CGEventFlags.maskAlternate.rawValue }
+        if flags.contains(.control)  { rawMods |= CGEventFlags.maskControl.rawValue }
+        if flags.contains(.shift)    { rawMods |= CGEventFlags.maskShift.rawValue }
+
+        // Require at least one modifier
+        guard rawMods != 0 else { return }
+
+        let newKeyCode = Int(event.keyCode)
+
+        DispatchQueue.main.async {
+            self.modifierRaw = rawMods
+            self.keyCode = newKeyCode
+            self.stopRecording()
+        }
+    }
+}
+
 // MARK: - Launch at Login Toggle
 
 struct LaunchAtLoginToggle: View {
@@ -210,7 +348,6 @@ struct LaunchAtLoginToggle: View {
                             try SMAppService.mainApp.unregister()
                         }
                     } catch {
-                        // Revert on failure
                         isEnabled = !newValue
                     }
                 }

@@ -11,7 +11,6 @@ import { usePathname } from 'next/navigation';
 const NAV_LINKS = [
   { name: 'Expertises', href: '/expertises' },
   { name: 'Notre Action', href: '/notre-action' },
-  { name: 'Ressources', href: '/expertises' },
   { name: 'À propos', href: '/a-propos' },
   { name: 'Actualités', href: '/actualites' },
 ];

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import ArticleDetailClient from './ArticleDetailClient';
 
 export async function generateStaticParams() {
-  const slugs = getAllArticleSlugs();
+  const slugs = await getAllArticleSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 

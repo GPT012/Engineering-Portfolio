@@ -40,6 +40,32 @@ final class AppState {
         didSet { UserDefaults.standard.set(dictationLang, forKey: "dictationLang") }
     }
 
+    var dictationStyle: RecordingStyle {
+        didSet { UserDefaults.standard.set(dictationStyle.rawValue, forKey: "dictationStyle") }
+    }
+
+    // MARK: - Dictation Shortcut (configurable)
+    /// The virtual key code for the dictation shortcut (default: 49 = Space)
+    var dictationKeyCode: Int {
+        didSet { 
+            UserDefaults.standard.set(dictationKeyCode, forKey: "dictationKeyCode") 
+            NotificationCenter.default.post(name: NSNotification.Name("DictationShortcutChanged"), object: nil)
+        }
+    }
+    /// Required modifier flags as raw UInt64 (default: Option = maskAlternate)
+    var dictationModifierRaw: UInt64 {
+        didSet { 
+            UserDefaults.standard.set(dictationModifierRaw, forKey: "dictationModifierRaw") 
+            NotificationCenter.default.post(name: NSNotification.Name("DictationShortcutChanged"), object: nil)
+        }
+    }
+    /// Human-readable label for the current shortcut
+    var dictationShortcutLabel: String {
+        let modLabel = ShortcutHelper.modifierLabel(from: dictationModifierRaw)
+        let keyLabel = ShortcutHelper.keyLabel(from: dictationKeyCode)
+        return "\(modLabel)\(keyLabel)"
+    }
+
     // MARK: - Live State
     var liveBuffer: String = ""
     var keystrokeCount: Int = 0
@@ -69,6 +95,10 @@ final class AppState {
         self.triggerMode = TriggerMode(rawValue: defaults.string(forKey: "triggerMode") ?? "timer") ?? .timer
         self.triggerDelay = defaults.object(forKey: "triggerDelay") as? Int ?? 1000
         self.dictationLang = defaults.string(forKey: "dictationLang") ?? "fr-FR"
+        self.dictationStyle = RecordingStyle(rawValue: defaults.string(forKey: "dictationStyle") ?? "waveform") ?? .waveform
+
+        self.dictationKeyCode = 49  // Space
+        self.dictationModifierRaw = CGEventFlags.maskAlternate.rawValue  // Option
 
         // Load persisted history
         loadTranslationLog()
@@ -136,12 +166,14 @@ enum AppTab: String, CaseIterable, Sendable {
     case translate = "Translate"
     case dictation = "Dictation"
     case settings = "Settings"
+    case debug = "Debug"
 
     var icon: String {
         switch self {
         case .translate: return "character.book.closed"
         case .dictation: return "mic"
         case .settings: return "gearshape"
+        case .debug: return "ladybug"
         }
     }
 }

@@ -1,57 +1,40 @@
-# 🌐 ConFluent — Native Translation for the Global Web
+# ConFluent Safari | native-feel Web Translation 🍏✨
 
-Chrome extension that automatically translates what you type on any web page — **100% FREE** via Google Translate.
+> **The ultimate translation extension for the Safari browsing experience, optimized for macOS.**
 
-## ✨ Features
+ConFluent Safari is a high-performance browser extension specifically engineered for the Apple ecosystem. It brings the power of **ConFluent's real-time translation engine** to Safari, leveraging native-feel UI and efficient system integration to provide a seamless multilingual browsing experience.
 
-- **Auto-translation**: Type in your language → translated after a short pause
-- **Universal detection**: Works on `<input>`, `<textarea>`, and `contentEditable` (Discord, Slack, etc.)
-- **3 trigger modes**: Standard (Timer), ⚡ Rapid (Instant), 📧 Pro (Sentence End)
-- **Conversation Mode**: Translates incoming messages in real-time (MutationObserver + batching)
-- **10 languages**: English, French, Spanish, German, Italian, Portuguese, Russian, Japanese, Chinese, Arabic
-- **Visual indicator**: Floating "orb" badge with color states (Green/Red/Violet/Orange)
-- **Dark Mode**: Full dark theme support for popup and badge
-- **Self-Healing**: Auto-injects content script on tab switch and extension update
+---
 
-## 🚀 Installation
+### 🚀 Key Features
 
-1. Open Chrome → `chrome://extensions/`
-2. Enable **Developer Mode** (toggle top-right)
-3. Click **Load unpacked**
-4. Select the `Confluentxyz` folder (or `dist` for the packaged version)
+- **macOS Native Integration** : Built to feel like a part of the Safari browser, with a clean, minimalist UI that aligns with Apple's design principles.
+- **Real-Time Input Translation** : Automatically detects and translates your typed text across web forms, search bars, and social platforms.
+- **Privacy-First Architecture** : Direct and secure communication with world-class translation APIs, ensuring no data leaks or intrusive tracking.
+- **Adaptive Performance** : Optimized for Safari's rendering engine, providing near-zero latency even on complex, data-heavy websites.
 
-## 📝 Usage
+---
 
-1. Make sure the extension is ON (orb badge is green)
-2. Type text in any input field on any website
-3. Wait for the trigger (timer, space, or sentence end depending on mode)
-4. Text is automatically translated!
+### 🛠️ Technical Specs
 
-## 📁 Structure
+- **Manifest Version** : `3` (Optimized for Safari's latest extension standard).
+- **Core Engine** : High-efficiency JavaScript with async background workers.
+- **Security** : Granular permission management across `<all_urls>`, focusing on user privacy and browsing stability.
 
-```
-Confluentxyz/
-├── manifest.json      # Manifest V3 configuration
-├── background.js      # Service Worker (Google Translate API + Self-Healing)
-├── content.js         # Injected script (input detection, DOM manipulation, badge, conversation mode)
-├── popup.html         # Popup UI
-├── popup.js           # Popup logic (config load/save, theme toggle)
-├── popup.css          # Ceramic/Glass Orb design system
-├── icons/             # Extension icons (16, 48, 128px)
-├── dist/              # Packaged beta release
-└── website/           # Landing page (confluent.xyz)
-```
+---
 
-## ⚙️ Trigger Modes
+### 🎨 Design & Experience
+The extension is designed for users who value both productivity and aesthetics. It features a sophisticated popup interface that allows for instant language switching and feature toggling without breaking your browsing workflow.
 
-| Mode | Description | Trigger |
-|------|-------------|---------|
-| **Standard** | Timer-based | After configurable delay (0.5s – 2s) |
-| **Rapid** | Instant on punctuation/space | Space, period, comma, etc. |
-| **Pro** | Sentence-end | Period, exclamation, question mark |
+---
 
-## 🔒 Permissions
+### 📦 Installation
 
-- `storage` — Save user preferences
-- `activeTab` / `scripting` — Inject content script
-- `clipboardRead` / `clipboardWrite` — Ctrl+A/Ctrl+V simulation for rich text editors
+1.  Open the GitHub Repository.
+2.  Enable Extensions in Safari Preferences.
+3.  Load the extension from the `ConFluent_Beta` directory.
+
+---
+
+### Developed by [0xbaw](https://github.com/0xbaw)
+*Product Engineer & Browser Extension Architect.*

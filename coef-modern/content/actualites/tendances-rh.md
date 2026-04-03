@@ -3,7 +3,7 @@ title: "Rétention des talents : 3 leviers pour fidéliser les hauts potentiels 
 date: "2024-02-28"
 category: "Ressources Humaines"
 summary: "Stratégies concrètes pour construire un environnement de travail attractif et retenir vos meilleurs éléments à Madagascar."
-image: "/images/about-office.png"
+image: "/images/portfolio/IMG-20241014-WA0027.jpg"
 readTime: "7 min"
 featured: false
 ---

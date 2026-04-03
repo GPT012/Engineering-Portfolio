@@ -89,8 +89,10 @@ struct Language: Identifiable, Hashable, Sendable {
         Language(id: "pt", name: "Português", flag: "🇧🇷"),
         Language(id: "ru", name: "Русский", flag: "🇷🇺"),
         Language(id: "ja", name: "日本語", flag: "🇯🇵"),
+        Language(id: "ko", name: "한국어", flag: "🇰🇷"),
         Language(id: "zh", name: "中文", flag: "🇨🇳"),
         Language(id: "ar", name: "العربية", flag: "🇸🇦"),
+        Language(id: "nl", name: "Nederlands", flag: "🇳🇱")
     ]
 }
 
@@ -108,13 +110,16 @@ struct SpeechLanguage: Identifiable, Hashable, Sendable {
         SpeechLanguage(id: "pt-BR", name: "Português"),
         SpeechLanguage(id: "ar-SA", name: "العربية"),
         SpeechLanguage(id: "ja-JP", name: "日本語"),
+        SpeechLanguage(id: "ko-KR", name: "한국어"),
         SpeechLanguage(id: "zh-CN", name: "中文"),
+        SpeechLanguage(id: "ru-RU", name: "Русский"),
+        SpeechLanguage(id: "nl-NL", name: "Nederlands")
     ]
 }
 
 // MARK: - App Status
 
-enum AppStatus: Sendable {
+enum AppStatus: Sendable, Equatable {
     case active
     case translating
     case recording

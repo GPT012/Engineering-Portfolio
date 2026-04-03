@@ -29,6 +29,8 @@ struct PopoverView: View {
                     DictationTabView()
                 case .settings:
                     SettingsTabView()
+                case .debug:
+                    DebugTabView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -37,7 +39,12 @@ struct PopoverView: View {
             footer
         }
         .frame(width: 400, height: 520)
-        .background(.ultraThinMaterial)
+        .background(
+            ZStack {
+                VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+                DesignSystem.Colors.background.opacity(0.4)
+            }
+        )
     }
 
     // MARK: - Title Bar
@@ -45,7 +52,7 @@ struct PopoverView: View {
     private var titleBar: some View {
         HStack {
             Image(systemName: "character.book.closed.fill")
-                .foregroundStyle(.blue)
+                .foregroundStyle(DesignSystem.Colors.primary)
                 .font(.system(size: 16, weight: .bold))
 
             Text("ConFluent")
@@ -79,7 +86,7 @@ struct PopoverView: View {
                     .padding(.vertical, 7)
                     .background(
                         state.selectedTab == tab
-                            ? AnyShapeStyle(.tint.opacity(0.15))
+                            ? AnyShapeStyle(DesignSystem.Colors.primary.opacity(0.15))
                             : AnyShapeStyle(.clear)
                     )
                     .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -131,12 +138,31 @@ struct StatusIndicator: View {
 
     private var statusColor: Color {
         switch status {
-        case .active: return .green
-        case .translating: return .blue
+        case .active: return DesignSystem.Colors.primary
+        case .translating: return DesignSystem.Colors.secondary
         case .recording: return .red
         case .error: return .red
         case .disabled: return .gray
         }
+    }
+}
+
+// MARK: - Visual Effect View helper
+struct VisualEffectView: NSViewRepresentable {
+    let material: NSVisualEffectView.Material
+    let blendingMode: NSVisualEffectView.BlendingMode
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = material
+        view.blendingMode = blendingMode
+        view.state = .active
+        return view
+    }
+
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        nsView.material = material
+        nsView.blendingMode = blendingMode
     }
 }
 
@@ -176,7 +202,7 @@ struct TranslateTabView: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .strokeBorder(
-                                state.keystrokeCount > 0 ? Color.blue.opacity(0.3) : Color.clear,
+                                state.keystrokeCount > 0 ? DesignSystem.Colors.secondary.opacity(0.3) : Color.clear,
                                 lineWidth: 1
                             )
                     )
@@ -201,7 +227,14 @@ struct TranslateTabView: View {
 
                     if !state.translationLog.isEmpty {
                         Button("Clear") {
-                            withAnimation { state.clearTranslationLog() }
+                            PopupCoordinator.shared.showDestructive(
+                                title: "Effacer l'historique",
+                                message: "Toutes les traductions seront supprimées. Cette action est irréversible.",
+                                destructiveLabel: "Effacer",
+                                cancelLabel: "Annuler"
+                            ) {
+                                withAnimation { state.clearTranslationLog() }
+                            }
                         }
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(.secondary)
@@ -253,10 +286,10 @@ struct TranslationRow: View {
                 if entry.detectedLang != "auto" {
                     Text("\(entry.detectedLang) → \(entry.targetLang)")
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(DesignSystem.Colors.primary)
                         .padding(.horizontal, 5)
                         .padding(.vertical, 1)
-                        .background(Color.blue.opacity(0.1))
+                        .background(DesignSystem.Colors.primary.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
 
@@ -304,7 +337,13 @@ struct AccessibilityBanner: View {
             Spacer()
 
             Button("Grant") {
-                AccessibilityManager.openAccessibilitySettings()
+                PopupCoordinator.shared.showError(
+                    title: "Permission requise",
+                    message: "ConFluent a besoin de l'accès Accessibilité pour intercepter les frappes clavier et traduire en temps réel.",
+                    actionLabel: "Ouvrir les Préférences"
+                ) {
+                    AccessibilityManager.openAccessibilitySettings()
+                }
             }
             .font(.system(size: 11, weight: .bold))
             .buttonStyle(.bordered)

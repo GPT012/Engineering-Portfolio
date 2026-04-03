@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Maximize2, MapPin } from 'lucide-react';
+import { Maximize2, MapPin, Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 type Category = 'Tous' | 'Terrain' | 'Formation' | 'Afrobarometer' | 'Social';
 
@@ -17,7 +18,7 @@ interface Photo {
   span?: 'row-span-2' | 'col-span-2' | '';
 }
 
-const PHOTOS: Photo[] = [
+const INITIAL_PHOTOS: Photo[] = [
   {
     src: '/images/portfolio/IMG_6226.JPG',
     category: 'Terrain',
@@ -126,10 +127,42 @@ const CATEGORIES: Category[] = ['Tous', 'Terrain', 'Formation', 'Afrobarometer',
 export default function PortfolioGallery() {
   const [filter, setFilter] = useState<Category>('Tous');
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>(INITIAL_PHOTOS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPortfolio() {
+      try {
+        const { data, error } = await supabase
+          .from('portfolio')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (data && !error && data.length > 0) {
+          const remotePhotos: Photo[] = data.map((item: any) => ({
+            src: item.image_url,
+            category: item.category as Category,
+            title: item.title,
+            location: item.location,
+            description: item.description,
+            span: item.span as any,
+          }));
+          // Mix with initial ones but put new ones first
+          setPhotos([...remotePhotos, ...INITIAL_PHOTOS]);
+        }
+      } catch (err) {
+        console.error('Portfolio fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPortfolio();
+  }, []);
 
   const filteredPhotos = filter === 'Tous' 
-    ? PHOTOS 
-    : PHOTOS.filter(p => p.category === filter);
+    ? photos 
+    : photos.filter(p => p.category === filter);
 
   return (
     <section className="py-20 px-6">

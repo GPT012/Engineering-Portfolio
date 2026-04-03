@@ -11,7 +11,6 @@ struct DictationTabView: View {
     @Environment(DictationEngine.self) private var dictation
 
     @State private var audioLevel: Float = 0
-    @State private var showCopied: Bool = false
 
     var body: some View {
         VStack(spacing: 12) {
@@ -78,12 +77,12 @@ struct DictationTabView: View {
             .buttonStyle(.plain)
 
             // Status text
-            Text(state.isRecording ? "Listening..." : "Hold ⌥ + Space to record")
+            Text(state.isRecording ? "Écoute en cours..." : "Maintiens ⌥ + Space pour dicter")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(state.isRecording ? .red : .secondary)
                 .animation(.easeInOut, value: state.isRecording)
 
-            Text(state.isRecording ? "Release to stop and copy" : "Release to stop — auto-copied to clipboard")
+            Text(state.isRecording ? "Relâche pour arrêter" : "La traduction est copiée automatiquement")
                 .font(.system(size: 10))
                 .foregroundStyle(.tertiary)
         }

@@ -1,57 +1,43 @@
-# 🌐 ConFluent — Native Translation for the Global Web
+# ConFluent Chrome | Seamless Web Translation ✨🌍
 
-Chrome extension that automatically translates what you type on any web page — **100% FREE** via Google Translate.
+> **Auto-translate what you type, anywhere on the web.**
 
-## ✨ Features
+ConFluent Chrome is a high-performance Browser Extension built with **Manifest V3**. It provides a seamless, real-time translation experience for users who communicate across multiple languages on web-based platforms, from social media to productivity suites.
 
-- **Auto-translation**: Type in your language → translated after a short pause
-- **Universal detection**: Works on `<input>`, `<textarea>`, and `contentEditable` (Discord, Slack, etc.)
-- **3 trigger modes**: Standard (Timer), ⚡ Rapid (Instant), 📧 Pro (Sentence End)
-- **Conversation Mode**: Translates incoming messages in real-time (MutationObserver + batching)
-- **10 languages**: English, French, Spanish, German, Italian, Portuguese, Russian, Japanese, Chinese, Arabic
-- **Visual indicator**: Floating "orb" badge with color states (Green/Red/Violet/Orange)
-- **Dark Mode**: Full dark theme support for popup and badge
-- **Self-Healing**: Auto-injects content script on tab switch and extension update
+---
 
-## 🚀 Installation
+### 🚀 Key Features
 
-1. Open Chrome → `chrome://extensions/`
-2. Enable **Developer Mode** (toggle top-right)
-3. Click **Load unpacked**
-4. Select the `Confluentxyz` folder (or `dist` for the packaged version)
+- **Real-Time Translation** : Translates your typed text instantly as you interact with web forms and inputs.
+- **Universal Compatibility** : Works across `<all_urls>`, injecting its logic into all frames for a consistent experience on any site.
+- **Power Efficiency** : Leverages **Chrome Service Workers** for background processing, ensuring minimal impact on browser performance.
+- **Direct API Integration** : Direct communication with **Google Translate API** for reliable and accurate translations.
+- **Clipboard Intelligence** : Integrated `clipboardRead/Write` for quick translation of copied text segments.
 
-## 📝 Usage
+---
 
-1. Make sure the extension is ON (orb badge is green)
-2. Type text in any input field on any website
-3. Wait for the trigger (timer, space, or sentence end depending on mode)
-4. Text is automatically translated!
+### 🛠️ Technical Implementation
 
-## 📁 Structure
+- **Manifest Version** : `3` (Latest standard).
+- **Core Engine** : Native JavaScript with **Service Worker** architecture.
+- **Script Injection** : Advanced `content_script` injection at `document_end`, ensuring compatibility with modern SPAs (Single Page Apps).
+- **Permissions** : Granular and secure use of `scripting` and `storage` APIs to maintain user privacy and security.
 
-```
-Confluentxyz/
-├── manifest.json      # Manifest V3 configuration
-├── background.js      # Service Worker (Google Translate API + Self-Healing)
-├── content.js         # Injected script (input detection, DOM manipulation, badge, conversation mode)
-├── popup.html         # Popup UI
-├── popup.js           # Popup logic (config load/save, theme toggle)
-├── popup.css          # Ceramic/Glass Orb design system
-├── icons/             # Extension icons (16, 48, 128px)
-├── dist/              # Packaged beta release
-└── website/           # Landing page (confluent.xyz)
-```
+---
 
-## ⚙️ Trigger Modes
+### 🎨 Modular UI
+The extension features a clean, intuitive popup for configuration, allowing users to toggle features and change target languages instantly.
 
-| Mode | Description | Trigger |
-|------|-------------|---------|
-| **Standard** | Timer-based | After configurable delay (0.5s – 2s) |
-| **Rapid** | Instant on punctuation/space | Space, period, comma, etc. |
-| **Pro** | Sentence-end | Period, exclamation, question mark |
+---
 
-## 🔒 Permissions
+### 📦 Development & Installation
 
-- `storage` — Save user preferences
-- `activeTab` / `scripting` — Inject content script
-- `clipboardRead` / `clipboardWrite` — Ctrl+A/Ctrl+V simulation for rich text editors
+1.  Clone the repository.
+2.  Go to `chrome://extensions`.
+3.  Enable **Developer Mode**.
+4.  Click **Load Unpacked** and select the `src/` directory.
+
+---
+
+### Developed by [0xbaw](https://github.com/0xbaw)
+*Browser Extension Architect & Web Specialist.*

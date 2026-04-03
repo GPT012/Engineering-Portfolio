@@ -17,7 +17,7 @@ export default function ArticleDetailClient({ article }: { article: Article }) {
   return (
     <div className="min-h-screen bg-brand-sand/10">
       {/* HERO */}
-      <section className="relative bg-brand-blue pt-40 pb-32 px-6 overflow-hidden">
+      <section className="relative bg-brand-blue pt-52 pb-32 px-6 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
           <svg width="100%" height="100%">
             <pattern id="article-grid" width="40" height="40" patternUnits="userSpaceOnUse">

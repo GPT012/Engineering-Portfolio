@@ -3,7 +3,7 @@ title: "Les nouveaux défis de la gouvernance d'entreprise à Madagascar en 2024
 date: "2024-03-12"
 category: "Audit & Organisation"
 summary: "Une analyse chirurgicale des mutations structurelles qui façonnent actuellement le marché malgache."
-image: "/images/about-office.png"
+image: "/images/portfolio/IMG_6337.JPG"
 readTime: "5 min"
 featured: true
 ---

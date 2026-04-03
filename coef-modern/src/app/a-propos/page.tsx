@@ -37,8 +37,8 @@ const TIMELINE = [
   },
   {
     year: "2024",
-    title: "Nouvelle Ère Digitale",
-    desc: "Léa RAKOTO prend la direction du cabinet. Lancement d'une transformation profonde axée sur l'agilité, l'innovation technologique et l'internationalisation.",
+    title: "Transformation Digitale",
+    desc: "Amorçage d'une transformation profonde axée sur l'agilité, l'innovation technologique et l'optimisation des processus de collecte de données à travers l'île.",
     color: "text-brand-blue"
   }
 ];
@@ -78,7 +78,7 @@ export default function About() {
   const lineHeight = useTransform(timelineProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div ref={containerRef} className="pt-24 min-h-screen bg-brand-sand/10 overflow-hidden relative selection:bg-brand-yellow selection:text-brand-blue">
+    <div ref={containerRef} className="pt-48 min-h-screen bg-brand-sand/10 overflow-hidden relative selection:bg-brand-yellow selection:text-brand-blue">
       
       {/* 1. HERO PARALLAX */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden bg-brand-blue">
@@ -101,8 +101,8 @@ export default function About() {
               <span className="text-[10px] font-black uppercase tracking-[0.6em] text-brand-yellow">Depuis 2000</span>
               <span className="h-px w-10 bg-brand-yellow" />
             </motion.div>
-            <motion.h1 variants={fadeInUp} className="font-heading text-5xl md:text-[90px] font-black text-white leading-[0.9] tracking-tighter mb-8">
-              L&apos;excellence forge <br /> <span className="serif-heading italic font-normal text-brand-yellow">notre signature.</span>
+            <motion.h1 variants={fadeInUp} className="font-heading text-5xl md:text-[90px] font-black text-white leading-[0.9] tracking-tighter mb-8 italic">
+              L&apos;expertise collective <br /> au service de <span className="serif-heading italic font-normal text-brand-yellow">Madagascar.</span>
             </motion.h1>
           </motion.div>
         </div>
@@ -114,126 +114,99 @@ export default function About() {
         </div>
       </section>
 
-      {/* 2. FOUNDER SPOTLIGHT — Photo + Citation + Story */}
-      <section className="py-20 px-6 max-w-7xl mx-auto">
+      <section className="py-24 px-6 max-w-7xl mx-auto">
         <motion.div 
           initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-          className="grid lg:grid-cols-12 gap-12 items-stretch"
+          className="grid lg:grid-cols-12 gap-20 items-center"
         >
-          {/* Header */}
+          {/* Header & General Intro */}
           <motion.div variants={fadeInUp} className="lg:col-span-12 mb-4">
              <div className="flex items-center gap-6 mb-8">
-                <span className="text-brand-yellow font-black text-[11px] uppercase tracking-[0.5em]">Héritage &amp; Vision</span>
+                <span className="text-brand-yellow font-black text-[11px] uppercase tracking-[0.5em]">Héritage &amp; Institution</span>
                 <div className="h-px flex-1 bg-brand-blue/10" />
              </div>
           </motion.div>
 
-          {/* Text Column */}
-          <motion.div variants={fadeInUp} className="lg:col-span-7 flex flex-col justify-center">
-            <h2 className="font-heading text-4xl md:text-6xl font-black text-brand-blue mb-8 leading-[0.95] tracking-tighter">
-              24 ans de bâtisseurs <br /> de capital humain.
-            </h2>
-            <div className="space-y-4 text-lg text-brand-blue/70 leading-relaxed font-medium">
-              <p>
-                Fondé en 2000 par <strong className="text-brand-blue">Désiré RAZAFINDRAZAKA</strong>, le cabinet COEF Ressources s&apos;est érigé comme le pilier stratégique des organisations malgaches. Notre approche combine rigueur méthodologique internationale et connaissance profonde du terrain local.
-              </p>
-              <p>
-                Sous la direction de <strong className="text-brand-blue">Léa RAKOTO</strong>, PDG, nous perpétuons cet héritage d&apos;excellence avec une vision résolument tournée vers l&apos;avenir. Elle incarne la nouvelle génération de leaders malgaches — audacieuse, connectée et profondément engagée.
-              </p>
-              <p>
-                Notre force réside dans cette alliance rare : une rigueur académique internationale couplée à une maîtrise chirurgicale des réalités du terrain malgache. Une signature qui convainc les plus grandes institutions mondiales.
-              </p>
-            </div>
-
-            {/* Citation Block */}
-            <motion.div variants={fadeInUp} className="mt-8 bg-brand-blue/5 border-l-4 border-brand-yellow p-6 relative">
-              <Quote size={24} className="text-brand-yellow/30 absolute top-4 right-4" />
-              <p className="text-brand-blue font-heading text-xl italic leading-relaxed mb-3">
-                &quot;L&apos;excellence n&apos;est pas un acte isolé. C&apos;est une habitude, une discipline quotidienne que nous inculquons à chaque mission.&quot;
-              </p>
-              <p className="text-brand-yellow text-[10px] font-black uppercase tracking-widest">Léa RAKOTO • PDG</p>
-            </motion.div>
-            
-            <div className="mt-8 flex items-center gap-8">
-              <div className="flex flex-col">
-                <span className="text-4xl font-heading font-black text-brand-blue">2000</span>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-yellow mt-1">Fondation</span>
-              </div>
-              <div className="h-10 w-px bg-brand-blue/10" />
-              <div className="flex flex-col">
-                <span className="text-4xl font-heading font-black text-brand-blue">150+</span>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-yellow mt-1">Partenaires</span>
-              </div>
-              <div className="h-10 w-px bg-brand-blue/10" />
-              <div className="flex flex-col">
-                <span className="text-4xl font-heading font-black text-brand-blue">40+</span>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-yellow mt-1">Experts</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Prestige Image Block — PDG Photo */}
+          {/* Left: Collective Image */}
           <motion.div variants={fadeInUp} className="lg:col-span-5 relative">
-             <div className="relative aspect-[3/4] overflow-hidden border-8 border-white shadow-2xl">
+             <div className="relative aspect-[3/4] overflow-hidden border-[12px] border-white shadow-2xl">
                 <Image 
-                  src="/images/pdg-lea.png" 
-                  alt="Léa RAKOTO — PDG de CoefRessources" 
+                  src="/images/portfolio/IMG_6226.JPG" 
+                  alt="L'équipe CoefRessources sur le terrain" 
                   fill 
                   className="object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                 />
+                <div className="absolute inset-0 bg-brand-blue/10" />
              </div>
-             <div className="absolute -bottom-8 -right-4 md:-right-8 bg-brand-blue p-8 shadow-3xl">
-                <div className="h-1 w-10 bg-brand-yellow mb-4" />
-                <p className="text-white font-heading text-lg mb-1 italic">&quot;La nouvelle ère du conseil malgache.&quot;</p>
-                <p className="text-brand-yellow text-[10px] font-black uppercase tracking-widest mt-3">Direction Générale</p>
+             <div className="absolute -bottom-10 -left-10 bg-brand-blue p-10 shadow-3xl max-w-[280px]">
+                <p className="text-brand-yellow font-heading text-4xl font-black mb-2 leading-none">150+</p>
+                <p className="text-white text-[10px] font-black uppercase tracking-widest leading-relaxed">Agents mobilisables sur l&apos;ensemble du territoire malgache.</p>
              </div>
+          </motion.div>
+
+          {/* Right: The Institutions Story */}
+          <motion.div variants={fadeInUp} className="lg:col-span-7">
+            <h2 className="font-heading text-5xl md:text-7xl font-black text-brand-blue mb-10 leading-[0.9] tracking-tighter">
+              Une institution <br /> au service du <span className="serif-heading italic font-normal text-brand-green">développement.</span>
+            </h2>
+            <div className="space-y-8 text-xl text-brand-blue/70 leading-relaxed font-medium italic">
+              <p>
+                Depuis plus de <strong className="text-brand-blue font-black">24 ans</strong>, CoefRessources s&apos;est imposé comme le pilier stratégique du conseil à Madagascar. Notre force ne repose pas sur une individualité, mais sur une intelligence collective unique.
+              </p>
+              <p>
+                Notre cabinet réunit aujourd&apos;hui plus de <strong className="text-brand-blue font-black">40 experts pluridisciplinaires</strong> et une force de frappe de <strong className="text-brand-blue font-black">150 enquêteurs chevronnés</strong>. C&apos;est cette armée de compétences qui nous permet d&apos;intervenir avec la même précision dans les hautes sphères de la stratégie que sur les terrains les plus reculés de la Grande Île.
+              </p>
+              <p>
+                La rigueur académique internationale couplée à une maîtrise chirurgicale des réalités locales constitue l&apos;ADN de notre signature. Un gage de confiance pour les plus grandes institutions mondiales.
+              </p>
+            </div>
+
+            <div className="mt-16 grid grid-cols-2 gap-12">
+               <div className="border-t-2 border-brand-yellow pt-6">
+                  <p className="text-brand-blue font-heading text-4xl font-black mb-1">2000</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-brand-blue/40">Année de Fondation</p>
+               </div>
+               <div className="border-t-2 border-brand-green pt-6">
+                  <p className="text-brand-blue font-heading text-4xl font-black mb-1">22</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-brand-blue/40">Zones d&apos;intervention</p>
+               </div>
+            </div>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* 2b. FOUNDER LEGACY — Second photo block */}
-      <section className="py-12 px-6 max-w-7xl mx-auto">
-        <motion.div 
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-          className="grid lg:grid-cols-12 gap-12 items-center"
-        >
-          {/* Founder Image */}
-          <motion.div variants={fadeInUp} className="lg:col-span-5 relative order-2 lg:order-1">
-            <div className="relative aspect-[4/3] overflow-hidden border-8 border-white shadow-2xl">
-              <Image 
-                src="/images/founder.png" 
-                alt="Désiré RAZAFINDRAZAKA — Fondateur de CoefRessources" 
-                fill 
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-1000"
-              />
-            </div>
+      {/* 2b. COLLECTIVE EXPERTISE HUBS */}
+      <section className="py-24 px-6 bg-brand-blue/5 border-y border-brand-blue/5">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial="hidden" whileInView="show" viewport={{ once: true }} variants={staggerContainer}
+            className="grid md:grid-cols-3 gap-16"
+          >
+            {[
+              { 
+                title: "Excellence Académique", 
+                desc: "Une équipe issue des meilleures formations internationales, garantissant une méthodologie infaillible.",
+                icon: Award 
+              },
+              { 
+                title: "Maîtrise du Terrain", 
+                desc: "Une présence physique dans les 22 régions de Madagascar pour une collecte de données authentique.",
+                icon: Target 
+              },
+              { 
+                title: "Vision Multi-secteurs", 
+                desc: "De l'industrie minière au secteur humanitaire, notre expertise traverse toutes les strates de l'économie.",
+                icon: Sparkles 
+              }
+            ].map((item, idx) => (
+              <motion.div key={idx} variants={fadeInUp} className="relative group">
+                <item.icon size={48} strokeWidth={1} className="text-brand-blue/20 group-hover:text-brand-yellow transition-colors duration-500 mb-8" />
+                <h4 className="font-heading text-2xl font-black text-brand-blue mb-4 tracking-tighter uppercase">{item.title}</h4>
+                <p className="text-brand-blue/60 leading-relaxed font-medium">{item.desc}</p>
+              </motion.div>
+            ))}
           </motion.div>
-
-          {/* Founder Story */}
-          <motion.div variants={fadeInUp} className="lg:col-span-7 order-1 lg:order-2">
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-brand-green font-black text-[11px] uppercase tracking-[0.5em]">Le Fondateur</span>
-              <div className="h-px w-12 bg-brand-blue/10" />
-            </div>
-            <h3 className="font-heading text-3xl md:text-5xl font-black text-brand-blue mb-6 tracking-tighter">
-              Désiré RAZAFINDRAZAKA
-            </h3>
-            <div className="space-y-3 text-lg text-brand-blue/70 leading-relaxed font-medium">
-              <p>
-                Visionnaire et pionnier, Désiré RAZAFINDRAZAKA a fondé COEF Ressources avec la conviction que Madagascar méritait un cabinet de conseil à la hauteur des standards internationaux.
-              </p>
-              <p>
-                Son ambition : créer un écosystème de compétences locales capable de rivaliser avec les plus grands cabinets mondiaux, tout en restant profondément ancré dans les réalités malgaches.
-              </p>
-            </div>
-            <motion.div variants={fadeInUp} className="mt-6 bg-brand-green/5 border-l-4 border-brand-green p-6">
-              <p className="text-brand-blue font-heading text-lg italic leading-relaxed">
-                &quot;Investir dans le capital humain, c&apos;est investir dans l&apos;avenir d&apos;une nation.&quot;
-              </p>
-              <p className="text-brand-green text-[10px] font-black uppercase tracking-widest mt-2">Désiré RAZAFINDRAZAKA • Fondateur</p>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* 3. ANIMATED TIMELINE - Colored Years */}

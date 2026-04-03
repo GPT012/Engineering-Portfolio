@@ -1,6 +1,5 @@
 // ===================================
 // ConFluent Swift — Dictation Engine
-// Replaces: Web Speech API in Electron overlay
 // Uses Apple Speech framework (works OFFLINE!)
 // ===================================
 
@@ -26,7 +25,6 @@ final class DictationEngine: @unchecked Sendable {
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
 
-
     // MARK: - Callbacks
     var onTranscriptUpdate: ((String, String) -> Void)?  // (final, interim)
     var onRecordingStarted: (() -> Void)?
@@ -37,7 +35,6 @@ final class DictationEngine: @unchecked Sendable {
     // MARK: - Permission Check
 
     nonisolated static func requestPermission() async -> Bool {
-        // Request speech recognition permission
         let speechStatus = await withCheckedContinuation { continuation in
             SFSpeechRecognizer.requestAuthorization { status in
                 continuation.resume(returning: status)
@@ -46,12 +43,11 @@ final class DictationEngine: @unchecked Sendable {
 
         guard speechStatus == .authorized else { return false }
 
-        // Request microphone permission
         let micGranted: Bool
         if #available(macOS 14.0, *) {
             micGranted = await AVAudioApplication.requestRecordPermission()
         } else {
-            micGranted = true  // Pre-14.0 doesn't need explicit permission
+            micGranted = true
         }
 
         return micGranted
@@ -67,9 +63,13 @@ final class DictationEngine: @unchecked Sendable {
         guard !isRecording else { return }
 
         // Clean up any previous session
-        stopRecording()
+        stopRecordingProcessing()
 
-        // Create recognizer for the requested language
+        let startTime = Date()
+
+        let inputNode = audioEngine.inputNode
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+
         let locale = Locale(identifier: lang)
         recognizer = SFSpeechRecognizer(locale: locale)
 
@@ -78,7 +78,6 @@ final class DictationEngine: @unchecked Sendable {
             return
         }
 
-        // Enable on-device recognition for privacy and offline support
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let request = recognitionRequest else {
             onError?("Could not create recognition request")
@@ -87,22 +86,12 @@ final class DictationEngine: @unchecked Sendable {
 
         request.shouldReportPartialResults = true
 
-        // Use on-device recognition if available (macOS 14+)
         if #available(macOS 14, *) {
-            request.requiresOnDeviceRecognition = false // Set true for offline-only
+            request.requiresOnDeviceRecognition = false
             request.addsPunctuation = true
         }
 
-        let startTime = Date()
-
-        // Start recognition task
         recognitionTask = startRecognitionTask(recognizer: recognizer, request: request, startTime: startTime)
-
-        // Configure audio engine with a single tap that handles both
-        // speech recognition forwarding and audio level metering
-        let inputNode = audioEngine.inputNode
-        let recordingFormat = inputNode.outputFormat(forBus: 0)
-
         installAudioTap(on: inputNode, format: recordingFormat, request: request)
 
         audioEngine.prepare()
@@ -121,11 +110,8 @@ final class DictationEngine: @unchecked Sendable {
             let finalText = result?.bestTranscription.formattedString
             let isFinal = result?.isFinal ?? false
             
-            // Task is completed if it's explicitly final, or if an error terminated it
             let isDone = isFinal || (error != nil)
-            
             let nsError = error as NSError?
-            // Ignore error 1 (no speech) and 216/203 (cancelled/timeout) for the UI
             let isCancelledOrNoSpeech = nsError?.code == 1 || nsError?.code == 216 || nsError?.code == 203
             
             let errorMsg: String? = {
@@ -144,7 +130,6 @@ final class DictationEngine: @unchecked Sendable {
                         self.onTranscriptUpdate?(text, "")
                     }
                 } else if isDone {
-                    // Completed but no text generated (e.g., no speech detected)
                     let duration = Date().timeIntervalSince(startTime)
                     self.onRecordingStopped?("", duration)
                 }
@@ -159,11 +144,12 @@ final class DictationEngine: @unchecked Sendable {
     nonisolated private func installAudioTap(
         on inputNode: AVAudioInputNode,
         format: AVAudioFormat,
-        request: SFSpeechAudioBufferRecognitionRequest?
+        request: SFSpeechAudioBufferRecognitionRequest
     ) {
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
-            request?.append(buffer)
+            request.append(buffer)
 
+            // Metering
             guard let channelData = buffer.floatChannelData?[0] else { return }
             let frames = buffer.frameLength
             guard frames > 0 else { return }
@@ -173,7 +159,7 @@ final class DictationEngine: @unchecked Sendable {
                 sumSquares += sample * sample
             }
             let rms = sqrt(sumSquares / Float(frames))
-            let normalizedLevel = min(1.0, rms * 5.0)  // Scale up for visibility
+            let normalizedLevel = min(1.0, rms * 5.0)
 
             Task { @MainActor [weak self] in
                 self?.onAudioLevel?(normalizedLevel)
@@ -191,17 +177,27 @@ final class DictationEngine: @unchecked Sendable {
             audioEngine.inputNode.removeTap(onBus: 0)
         }
 
-        // Signal that no more audio will be provided
-        recognitionRequest?.endAudio()
-        
-        // We DO NOT cancel the recognitionTask here.
-        // We let the speech engine gracefully finalize the transcription, 
-        // which will trigger the callback with `isFinal = true`.
-
-        recognitionRequest = nil
-        recognitionTask = nil
-
         isRecording = false
         onAudioLevel?(0)
+
+        finalizeNativeRecording()
+    }
+    
+    private func stopRecordingProcessing() {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
+        }
+        
+        recognitionRequest?.endAudio()
+        recognitionRequest = nil
+        recognitionTask?.cancel()
+        recognitionTask = nil
+    }
+
+    private func finalizeNativeRecording() {
+        recognitionRequest?.endAudio()
+        recognitionRequest = nil
+        recognitionTask = nil
     }
 }

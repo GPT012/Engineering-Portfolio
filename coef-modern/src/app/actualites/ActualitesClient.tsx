@@ -46,10 +46,19 @@ export default function ActualitesClient({ articles, categories }: Props) {
   const regularArticles = filteredArticles.filter(a => !a.featured);
 
   return (
-    <div className="pt-24 min-h-screen bg-brand-sand/10 selection:bg-brand-yellow selection:text-brand-blue overflow-hidden">
+    <div className="pt-48 min-h-screen bg-brand-sand/10 selection:bg-brand-yellow selection:text-brand-blue overflow-hidden">
       
       {/* 1. HERO - Blue Journal Style */}
       <section className="relative bg-brand-blue pt-32 pb-60 px-6 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/images/portfolio/IMG_5938.JPG"
+            alt="Terrain background"
+            fill
+            className="object-cover opacity-20 mix-blend-multiply transition-transform duration-[10s] hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/80 via-brand-blue/20 to-transparent" />
+        </div>
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
           <svg width="100%" height="100%">
             <pattern id="journal-grid" width="40" height="40" patternUnits="userSpaceOnUse">

@@ -3,7 +3,7 @@ title: "Publication des résultats complets du 9ème round de l'Afrobarometer Ma
 date: "2024-02-14"
 category: "Études & Sondages"
 summary: "COEF-Ressources, partenaire national d'Afrobarometer, publie les résultats du 9ème round d'enquêtes d'opinion à Madagascar."
-image: "/images/about-office.png"
+image: "/images/portfolio/AFR_4902.JPG"
 readTime: "12 min"
 featured: false
 ---

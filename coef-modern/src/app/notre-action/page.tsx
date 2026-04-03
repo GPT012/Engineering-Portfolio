@@ -14,7 +14,7 @@ export default function NotreActionPage() {
       <Header />
       
       {/* HERO SECTION */}
-      <section className="relative pt-44 pb-20 md:pt-60 md:pb-32 overflow-hidden bg-brand-blue">
+      <section className="relative pt-52 pb-20 md:pt-60 md:pb-32 overflow-hidden bg-brand-blue">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/portfolio/IMG_6226.JPG" // boat photo
@@ -41,18 +41,18 @@ export default function NotreActionPage() {
             <p className="text-xl md:text-2xl text-white/80 font-medium leading-relaxed italic mb-8">
               "L'excellence méthodologique ne s'écrit pas dans des bureaux, elle se forge dans l'immensité du terrain malgache."
             </p>
-            <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-white/10 mt-4">
-              <div className="flex flex-col gap-1 px-8 py-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-1 min-w-[160px] shadow-2xl">
-                <span className="text-brand-yellow text-4xl font-heading font-black">22</span>
-                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Zones d'Action</span>
+            <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-white/10 mt-6 md:mt-10">
+              <div className="flex flex-col gap-1 px-10 py-6 bg-brand-blue/60 backdrop-blur-2xl rounded-3xl border border-white/10 flex-1 min-w-[180px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-transform hover:scale-105 duration-500">
+                <span className="text-brand-yellow text-4xl md:text-5xl font-heading font-black drop-shadow-xl">22</span>
+                <span className="text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em] drop-shadow-md">Zones d'Action</span>
               </div>
-              <div className="flex flex-col gap-1 px-8 py-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-1 min-w-[160px] shadow-2xl">
-                <span className="text-brand-yellow text-4xl font-heading font-black">150+</span>
-                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Enquêteurs</span>
+              <div className="flex flex-col gap-1 px-10 py-6 bg-brand-blue/60 backdrop-blur-2xl rounded-3xl border border-white/10 flex-1 min-w-[180px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-transform hover:scale-105 duration-500">
+                <span className="text-brand-yellow text-4xl md:text-5xl font-heading font-black drop-shadow-xl">150+</span>
+                <span className="text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em] drop-shadow-md">Enquêteurs</span>
               </div>
-              <div className="flex flex-col gap-1 px-8 py-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-1 min-w-[160px] shadow-2xl">
-                <span className="text-brand-yellow text-4xl font-heading font-black">100%</span>
-                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Madagascar</span>
+              <div className="flex flex-col gap-1 px-10 py-6 bg-brand-blue/60 backdrop-blur-2xl rounded-3xl border border-white/10 flex-1 min-w-[180px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-transform hover:scale-105 duration-500">
+                <span className="text-brand-yellow text-4xl md:text-5xl font-heading font-black drop-shadow-xl">100%</span>
+                <span className="text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em] drop-shadow-md">Madagascar</span>
               </div>
             </div>
           </div>

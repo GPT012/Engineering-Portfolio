@@ -4,7 +4,7 @@ options:
   deploymentTarget:
     macOS: "14.0"
   xcodeVersion: "16.0"
-  defaultConfig: Release
+  defaultConfig: Debug
 
 settings:
   base:
@@ -32,3 +32,14 @@ targets:
           SWIFT_OPTIMIZATION_LEVEL: "-Onone"
         Release:
           SWIFT_OPTIMIZATION_LEVEL: "-O"
+  ConFluentTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - ConFluentTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.confluent.translator.tests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: ConFluent

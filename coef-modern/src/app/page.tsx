@@ -30,36 +30,28 @@ const EXPERTISES = [
     title: "Ressources Humaines",
     desc: "Optimisation du capital humain, recrutement stratégique et gestion des talents.",
     icon: Users,
-    color: "bg-brand-green/10 text-brand-green",
-    accent: "bg-brand-green",
-    stat: { label: "Taux de placement", value: 98, type: "progress" },
+    image: "/images/portfolio/IMG-20241014-WA0027.jpg",
     span: "col-span-1 md:col-span-2 row-span-2"
   },
   {
     title: "Organisation",
     desc: "Transformation organisationnelle, audit structurel et accompagnement.",
     icon: Briefcase,
-    color: "bg-brand-blue/10 text-brand-blue",
-    accent: "bg-brand-blue",
-    stat: { label: "Structures auditées", value: 150, type: "number" },
+    image: "/images/portfolio/IMG-20241015-WA0008.jpg",
     span: "col-span-1 md:col-span-1 row-span-1"
   },
   {
     title: "Gestion de Projets",
     desc: "Pilotage d'études d'impact et suivi-évaluation.",
     icon: ClipboardCheck,
-    color: "bg-brand-gold/10 text-brand-gold",
-    accent: "bg-brand-gold",
-    stat: { label: "Projets d'impact", value: 120, type: "number" },
+    image: "/images/portfolio/IMG_6337.JPG",
     span: "col-span-1 md:col-span-1 row-span-1"
   },
   {
     title: "Sondages d'Opinion",
     desc: "Etudes quantitatives et qualitatives ciblées.",
     icon: BarChart3,
-    color: "bg-brand-forest/10 text-brand-forest",
-    accent: "bg-brand-forest",
-    stat: { label: "Fiabilité", value: 95, type: "progress" },
+    image: "/images/portfolio/AFR_4902.JPG",
     span: "col-span-1 md:col-span-2 row-span-1"
   }
 ];
@@ -159,7 +151,7 @@ export default function Home() {
     <div ref={containerRef} className="relative min-h-screen selection:bg-brand-green selection:text-brand-blue">
       
       {/* 1. HERO SECTION - Deep Forest Inversion */}
-      <section className="relative flex min-h-[95vh] items-center pt-44 pb-24 overflow-hidden bg-brand-blue">
+      <section className="relative flex min-h-[95vh] items-center pt-52 pb-24 overflow-hidden bg-brand-blue">
         {/* Subtle Background Pattern - Prestige Grid */}
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none">
           <svg width="100%" height="100%">
@@ -333,6 +325,17 @@ export default function Home() {
                     exp.span
                   )}
                 >
+                  {/* BACKGROUND AUTHENTIC PHOTO */}
+                  <div className="absolute inset-0 z-0 pointer-events-none">
+                    <Image 
+                      src={exp.image}
+                      alt={exp.title}
+                      fill
+                      className="object-cover opacity-[0.12] grayscale transition-all duration-[3s] group-hover:opacity-[0.25] group-hover:scale-105 group-hover:grayscale-0"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/50 to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-700" />
+                  </div>
+
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-start justify-between mb-auto">
                       <div className={cn("text-brand-blue transition-transform group-hover:scale-110 duration-700 ease-[cubic-bezier(0.85,0,0.15,1)]")}>
@@ -362,8 +365,63 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SECTEURS D'INTERVENTION (Refined Inversion) */}
+      <section className="py-24 px-6 bg-white border-t border-brand-sand overflow-hidden">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader 
+            title="Secteurs d'Intervention" 
+            subtitle="Une expertise multisectorielle éprouvée sur l'ensemble du territoire." 
+          />
+          
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 mt-16">
+            {SECTEURS.map((secteur, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group relative h-40 flex flex-col items-center justify-center border border-brand-blue/5 rounded-sm p-6 overflow-hidden bg-brand-sand/10 hover:bg-white hover:shadow-xl transition-all duration-700"
+              >
+                {/* LOW OPACITY BACKGROUND PHOTO */}
+                <div className="absolute inset-0 z-0">
+                  <Image 
+                    src={[
+                      "/images/portfolio/20230520_100240.jpg",
+                      "/images/portfolio/IMG_5938.JPG",
+                      "/images/portfolio/IMG_6226.JPG",
+                      "/images/portfolio/IMG_5840.JPG",
+                      "/images/portfolio/20230519_134123.jpg",
+                      "/images/portfolio/PXL_20230521_120841109.PORTRAIT.jpg"
+                    ][i]} 
+                    alt={secteur.name}
+                    fill
+                    className="object-cover opacity-[0.04] grayscale group-hover:opacity-[0.2] transition-opacity duration-1000"
+                  />
+                </div>
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <secteur.icon size={32} className="text-brand-blue mb-4 group-hover:scale-110 group-hover:text-brand-green transition-all" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-brand-blue/60 group-hover:text-brand-blue">{secteur.name}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 5. SOCIAL PROOF (Deep Forest Contrast) */}
       <section className="py-20 bg-brand-blue relative overflow-hidden border-t border-white/5">
+        {/* BACKGROUND FIELD PHOTO */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/images/portfolio/20230519_134123.jpg"
+            alt="Field mission group"
+            fill
+            className="object-cover opacity-[0.08] grayscale mix-blend-luminosity"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue via-transparent to-brand-blue" />
+        </div>
+
         <div className="mx-auto max-w-7xl px-6 relative z-10 mb-12">
           <SectionHeader 
             title="Preuve par l'Impact." 
@@ -421,14 +479,15 @@ export default function Home() {
 
       {/* 6. CTA FINAL */}
       <section className="py-16 px-6 bg-brand-sand">
-        <div className="mx-auto max-w-5xl rounded-[40px] bg-brand-green p-10 md:p-16 text-center shadow-2xl relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20 pointer-events-none">
-            <svg width="100%" height="100%">
-              <pattern id="diagonal" width="40" height="40" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="40" stroke="white" strokeWidth="2" />
-              </pattern>
-              <rect width="100%" height="100%" fill="url(#diagonal)" />
-            </svg>
+        <div className="mx-auto max-w-5xl rounded-[40px] bg-brand-blue p-10 md:p-16 text-center shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 z-0">
+            <Image 
+              src="/images/portfolio/IMG-20241015-WA0008.jpg"
+              alt="COEF Team"
+              fill
+              className="object-cover opacity-20 grayscale transition-transform duration-[10s] group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-green/90 via-brand-green/40 to-transparent" />
           </div>
           
           <div className="relative z-10">

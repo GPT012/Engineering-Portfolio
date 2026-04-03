@@ -6,9 +6,9 @@ export const metadata = {
   description: 'Décryptages stratégiques, rapports Afrobarometer et analyses de gouvernance par COEF-Ressources.',
 };
 
-export default function ActualitesPage() {
-  const articles = getAllArticles();
-  const categories = getAllCategories();
+export default async function ActualitesPage() {
+  const articles = await getAllArticles();
+  const categories = await getAllCategories();
 
   return <ActualitesClient articles={articles} categories={categories} />;
 }

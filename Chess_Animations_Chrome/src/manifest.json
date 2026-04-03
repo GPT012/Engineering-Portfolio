@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Chess Animations Pro (MVP)",
+  "version": "1.3",
+  "description": "Animations professionnelles et analyse Lichess cloud pour Chess.com",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://lichess.org/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["human.bin"],
+      "matches": ["*://*.chess.com/*"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.chess.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

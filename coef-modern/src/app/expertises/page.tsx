@@ -4,7 +4,9 @@ import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
   Users, Briefcase, ClipboardCheck, BarChart3, 
-  ArrowRight, Plus, Minus
+  ArrowRight, Plus, Minus,
+  Droplets, GraduationCap, Leaf, Users2, Plane, ShieldCheck,
+  Search, Lightbulb, Zap, Rocket
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -31,7 +33,8 @@ const SERVICES = [
     color: "bg-brand-blue/5 text-brand-blue",
     accent: "bg-brand-yellow",
     stat: { label: "Taux de rétention", value: "98%" },
-    features: ["Audit & Ingénierie RH", "Recrutement de dirigeants", "Développement des compétences", "Accompagnement de carrière"]
+    features: ["Audit & Ingénierie RH", "Recrutement de dirigeants", "Développement des compétences", "Accompagnement de carrière"],
+    caseStudy: "Recrutement du Top Management pour une institution financière de premier plan."
   },
   {
     id: "organisation",
@@ -41,7 +44,8 @@ const SERVICES = [
     color: "bg-brand-blue/5 text-brand-blue",
     accent: "bg-brand-yellow",
     stat: { label: "Missions d'audit", value: "150+" },
-    features: ["Schémas directeurs", "Manuel de procédures", "Gouvernance & Stratégie", "Conduite du changement"]
+    features: ["Schémas directeurs", "Manuel de procédures", "Gouvernance & Stratégie", "Conduite du changement"],
+    caseStudy: "Redéfinition du manuel de procédures pour un organisme international (WASH)."
   },
   {
     id: "projets",
@@ -51,7 +55,8 @@ const SERVICES = [
     color: "bg-brand-blue/5 text-brand-blue",
     accent: "bg-brand-yellow",
     stat: { label: "Experts mobilisés", value: "120+" },
-    features: ["Études socio-économiques", "Suivi & Évaluation (MSE)", "Études d'impact environnemental", "Capitalisation d'expériences"]
+    features: ["Études socio-économiques", "Suivi & Évaluation (MSE)", "Études d'impact environnemental", "Capitalisation d'expériences"],
+    caseStudy: "Étude d'impact socio-économique d'un grand projet d'infrastructure à Madagascar."
   },
   {
     id: "sondages",
@@ -61,7 +66,44 @@ const SERVICES = [
     color: "bg-brand-blue/5 text-brand-blue",
     accent: "bg-brand-yellow",
     stat: { label: "Fiabilité statistique", value: "95%" },
-    features: ["Baromètres d'opinion", "Collecte API (Afrobarometer)", "Analyses de satisfaction", "Veille stratégique"]
+    features: ["Baromètres d'opinion", "Collecte API (Afrobarometer)", "Analyses de satisfaction", "Veille stratégique"],
+    caseStudy: "Coordination nationale de l'enquête Afrobarometer Round 10 à Madagascar."
+  }
+];
+
+const SECTEURS = [
+  { name: "Eau & Hygiène", icon: Droplets, desc: "Accès à l'eau, assainissement et hygiène communautaire." },
+  { name: "Éducation", icon: GraduationCap, desc: "Alphabétisation, formation technique et insertion." },
+  { name: "Environnement", icon: Leaf, desc: "Conservation, gestion durable et biodiversité." },
+  { name: "Genre", icon: Users2, desc: "Inclusion, lutte contre les violences et autonomisation." },
+  { name: "Migration", icon: Plane, desc: "Mobilité humaine, diaspora et développement rural." },
+  { name: "Droits de l'enfant", icon: ShieldCheck, desc: "Protection, nutrition et accompagnement social." }
+];
+
+const METHODE = [
+  {
+    step: "01",
+    title: "Diagnostic Phare",
+    desc: "Immersion totale dans votre écosystème pour identifier les leviers de performance réels.",
+    icon: Search
+  },
+  {
+    step: "02",
+    title: "Solution Stratégique",
+    desc: "Conception d'une architecture sur-mesure combinant expertise locale et standards internationaux.",
+    icon: Lightbulb
+  },
+  {
+    step: "03",
+    title: "Impulsion Terrain",
+    desc: "Déploiement opérationnel agile avec nos 150 enquêteurs et experts mobilisables.",
+    icon: Zap
+  },
+  {
+    step: "04",
+    title: "Impact Durable",
+    desc: "Mesure de la performance et transfert de compétences pour une autonomie totale.",
+    icon: Rocket
   }
 ];
 
@@ -135,7 +177,7 @@ export default function Services() {
   const containerRef = useRef<HTMLDivElement>(null);
   
   return (
-    <div ref={containerRef} className="pt-44 pb-24 min-h-screen bg-brand-sand/30">
+    <div ref={containerRef} className="pt-52 pb-24 min-h-screen bg-brand-sand/30">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* HERO - Statutory & Minimalist */}
@@ -196,13 +238,24 @@ export default function Services() {
                 <h3 className="font-heading text-4xl md:text-6xl font-black text-brand-blue mb-8 tracking-tighter leading-tight">{service.title}</h3>
                 <p className="text-brand-blue/60 text-xl font-medium mb-12 max-w-2xl leading-relaxed">{service.desc}</p>
                 
-                <div className="grid md:grid-cols-2 gap-y-8 gap-x-12 mb-16">
+                <div className="grid md:grid-cols-2 gap-y-8 gap-x-12 mb-12">
                   {service.features.map((feature, fIdx) => (
                     <div key={fIdx} className="flex items-center gap-6 group/item">
                       <div className="h-px w-6 bg-brand-yellow group-hover/item:w-10 transition-all duration-500" />
                       <span className="text-brand-blue font-bold text-sm tracking-wide uppercase italic">{feature}</span>
                     </div>
                   ))}
+                </div>
+
+                {/* CASE STUDY MINI-CALLOUT */}
+                <div className="bg-brand-sand/50 p-6 border-l-4 border-brand-blue mb-12 flex items-start gap-4">
+                  <div className="h-8 w-8 rounded-full bg-brand-blue text-white flex items-center justify-center shrink-0 mt-1">
+                    <span className="text-[10px] font-black italic">!</span>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-brand-blue/40 mb-1">Impact Marquant</p>
+                    <p className="text-brand-blue font-bold text-sm italic">"{service.caseStudy}"</p>
+                  </div>
                 </div>
 
                 <Link href={`/contact?service=${service.id}`}>
@@ -214,6 +267,72 @@ export default function Services() {
             </motion.div>
           ))}
         </div>
+
+        {/* MÉTHODE COEF Section */}
+        <section className="py-24 border-y border-brand-blue/5 mt-20 bg-brand-blue text-white overflow-hidden relative rounded-sm">
+          {/* Subtle Background Pattern */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+            <svg width="100%" height="100%">
+              <pattern id="prestige-white-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#FFFFFF" strokeWidth="0.5" />
+              </pattern>
+              <rect width="100%" height="100%" fill="url(#prestige-white-grid)" />
+            </svg>
+          </div>
+
+          <div className="max-w-5xl mx-auto px-10 relative z-10 text-center mb-20">
+            <div className="inline-flex items-center gap-4 mb-10">
+              <span className="h-px w-8 bg-brand-gold" />
+              <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-gold">Rigueur Méthodologique</p>
+              <span className="h-px w-8 bg-brand-gold" />
+            </div>
+            <h2 className="font-heading text-5xl md:text-7xl font-black mb-6 tracking-tighter">La Méthode <span className="serif-heading italic font-normal text-brand-gold">COEF.</span></h2>
+            <p className="text-white/60 text-lg font-medium max-w-2xl mx-auto">Un protocole rigoureux en 4 étapes pour garantir l&apos;excellence opérationnelle et l&apos;impact durable de chaque intervention.</p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-4 px-10 max-w-7xl mx-auto relative z-10">
+            {METHODE.map((m, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2 }}
+                className="group p-10 border border-white/10 hover:bg-white/5 transition-all duration-700 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-5 font-black text-6xl group-hover:opacity-10 transition-opacity italic">{m.step}</div>
+                <m.icon size={40} className="text-brand-gold mb-8 group-hover:scale-110 transition-transform" />
+                <h4 className="text-xl font-black font-heading mb-4 text-white uppercase tracking-tighter">{m.title}</h4>
+                <p className="text-white/50 text-sm leading-relaxed font-normal">{m.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* EXPERTISE PAR SECTEUR Section */}
+        <section className="py-24 bg-white mt-12 rounded-sm border border-brand-blue/5 overflow-hidden">
+          <div className="max-w-5xl mx-auto px-10 text-center mb-20">
+             <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-blue/40 mb-6 italic">Agilité Multisectorielle</p>
+             <h2 className="font-heading text-5xl md:text-7xl font-black text-brand-blue tracking-tighter">Où nous <span className="serif-heading italic font-normal text-brand-green">agissons.</span></h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 px-10 max-w-7xl mx-auto">
+            {SECTEURS.map((s, i) => (
+              <motion.div 
+                key={i}
+                whileHover={{ y: -5 }}
+                className="group bg-brand-sand/20 border border-brand-sand p-10 hover:bg-white hover:shadow-2xl transition-all duration-700"
+              >
+                <div className="h-16 w-16 bg-brand-blue text-brand-gold flex items-center justify-center rounded-sm mb-8 group-hover:bg-brand-green group-hover:text-white transition-colors duration-500">
+                  <s.icon size={30} />
+                </div>
+                <h4 className="text-2xl font-black font-heading text-brand-blue mb-4 tracking-tighter uppercase">{s.name}</h4>
+                <p className="text-brand-blue/50 text-sm leading-relaxed font-medium mb-8">{s.desc}</p>
+                <div className="h-px w-10 bg-brand-blue/10 group-hover:w-full transition-all duration-700" />
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
         {/* FAQ ACCORDION SECTION - Statutory & Minimalist */}
         <motion.div 
