@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CoefRessources | Enterprise-Grade CMS & Prestige Portfolio 🏛️
 
-## Getting Started
+[![Deployment](https://img.shields.io/badge/Status-Live-success?style=flat-square)](https://coef-modern.vercel.app)
+[![Tech](https://img.shields.io/badge/Architecture-Next.js_15-000000?style=flat-square&logo=next.js)](https://nextjs.org)
+[![Database](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
+[![Security](https://img.shields.io/badge/Security-RLS_Lockdown-blue?style=flat-square)](https://postgresql.org)
 
-First, run the development server:
+> **Un écosystème digital complet conçu pour un cabinet de conseil leader à Madagascar. Alliant esthétique prestige, gestion de contenu autonome et sécurité industrielle.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🎨 L'Essence du Projet
+Ce projet n'est pas qu'un site vitrine, c'est une plateforme de gestion stratégique. L'objectif était de rendre une équipe non-technique totalement autonome dans la gestion de ses actualités, de son portfolio terrain et de ses prospects (leads).
+
+### ✨ Caractéristiques Majeures
+
+- **UI Haute-Couture** : Design "Journal" utilisant les codes du luxe et du prestige (Framer Motion, Glassmorphism, Typographies Playfair Display).
+- **CMS Dynamique & Intuitif** : Gestionnaire d'articles et de galerie photos via une interface d'administration simplifiée.
+- **Micro-CRM Intégré** : Système de capture de leads (projets) avec dashboard de suivi en temps réel.
+- **Performance de Pointe** : Optimisation des images (Next/Image) et chargement hybride (SSR/ISR).
+
+---
+
+## 🛡️ Architecture & Sécurité (Expert-Level)
+
+La sécurité a été au cœur de la conception, avec une approche **Zero Trust** sur les mutations de données.
+
+- **Supabase Auth** : Authentification robuste par Email/Mot de passe pour l'administration.
+- **Row Level Security (RLS)** : Politiques Postgres granulaires. Personne (même avec l'URL API) ne peut modifier le contenu sans être authentifié.
+- **Sanitisation & Validation** : Validation de type stricte via TypeScript sur l'ensemble du flux de données.
+
+---
+
+## 🚀 Stack Technique
+
+- **Frontend** : Next.js 15 (App Router), React 19, Tailwind CSS.
+- **Animations** : Framer Motion (Parallaxe, Stagger effects).
+- **Backend-as-a-Service** : Supabase (PostgreSQL, Storage, Auth).
+- **Icons** : Lucide React.
+- **Déploiement** : Vercel.
+
+---
+
+## 🛠️ Installation & Configuration local
+
+### 1. Variables d'environnement
+Créez un fichier `.env.local` :
+```env
+NEXT_PUBLIC_SUPABASE_URL=votre_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_key
+SUPABASE_SERVICE_ROLE_KEY=votre_secret
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Démarrage
+```bash
+npm install
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📄 Licence
+Propriété de CoefRessources. Tous droits réservés.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Architecturé par [0xbaw](https://github.com/0xbaw)
+*Spécialiste Next.js & Solutions Backend-as-a-Service.*
