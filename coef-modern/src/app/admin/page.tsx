@@ -20,6 +20,8 @@ export default function AdminPage() {
   const [authError, setAuthError] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  
   // Data State
   const [articles, setArticles] = useState<Article[]>([]);
   const [portfolio, setPortfolio] = useState<any[]>([]);
@@ -37,13 +39,18 @@ export default function AdminPage() {
 
   useEffect(() => {
     // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-    });
+      setIsCheckingSession(false);
+    };
+    
+    checkSession();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setIsCheckingSession(false);
     });
 
     return () => subscription.unsubscribe();
@@ -126,6 +133,23 @@ export default function AdminPage() {
     }
     setIsEditing(false); setUploading(false); setImageFile(null);
   };
+
+  // State: Initial Loading (Verifying session)
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-brand-blue flex flex-col items-center justify-center p-6 text-white">
+        <div className="relative">
+          <Loader2 className="animate-spin text-brand-yellow/30" size={80} strokeWidth={1} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="h-2 w-2 bg-brand-yellow rounded-full animate-ping" />
+          </div>
+        </div>
+        <p className="mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-brand-yellow/60 animate-pulse">
+          Vérification de l'accès sécurisé...
+        </p>
+      </div>
+    );
+  }
 
   if (!session) {
     return (
