@@ -1,32 +1,30 @@
-# ConFluent Chrome | Seamless Web Translation ✨🌍
+# ConFluent Chrome | Web Translation
 
-> **Auto-translate what you type, anywhere on the web.**
+> Translate text you enter on supported web pages.
 
-ConFluent Chrome is a high-performance Browser Extension built with **Manifest V3**. It provides a seamless, real-time translation experience for users who communicate across multiple languages on web-based platforms, from social media to productivity suites.
+ConFluent Chrome is a Manifest V3 browser extension that can translate text entered in web page fields and editors. Compatibility depends on the page and its input controls.
 
 ---
 
 ### 🚀 Key Features
 
-- **Real-Time Translation** : Translates your typed text instantly as you interact with web forms and inputs.
-- **Universal Compatibility** : Works across `<all_urls>`, injecting its logic into all frames for a consistent experience on any site.
-- **Power Efficiency** : Leverages **Chrome Service Workers** for background processing, ensuring minimal impact on browser performance.
-- **Direct API Integration** : Direct communication with **Google Translate API** for reliable and accurate translations.
-- **Clipboard Intelligence** : Integrated `clipboardRead/Write` for quick translation of copied text segments.
+- **Input translation**: Translates text after a pause in typing and supports a range of web page fields and editors.
+- **Translation service**: Sends translation requests to `translate.googleapis.com`.
+- **Clipboard actions**: Uses the browser clipboard APIs for selected translation actions.
 
 ---
 
 ### 🛠️ Technical Implementation
 
-- **Manifest Version** : `3` (Latest standard).
-- **Core Engine** : Native JavaScript with **Service Worker** architecture.
-- **Script Injection** : Advanced `content_script` injection at `document_end`, ensuring compatibility with modern SPAs (Single Page Apps).
-- **Permissions** : Granular and secure use of `scripting` and `storage` APIs to maintain user privacy and security.
+- **Manifest version**: `3`.
+- **Background processing**: JavaScript service worker.
+- **Content script**: Configured for all URLs and frames at `document_end`; behavior can vary between sites.
+- **Declared permissions**: `storage`, `activeTab`, `scripting`, `clipboardRead`, and `clipboardWrite`; the host permission is `https://translate.googleapis.com/*`.
 
 ---
 
 ### 🎨 Modular UI
-The extension features a clean, intuitive popup for configuration, allowing users to toggle features and change target languages instantly.
+The popup provides controls for enabling the extension and selecting a target language.
 
 ---
 
@@ -39,5 +37,8 @@ The extension features a clean, intuitive popup for configuration, allowing user
 
 ---
 
-### Developed by [0xbaw](https://github.com/0xbaw)
-*Browser Extension Architect & Web Specialist.*
+### Built by [GPT012](https://github.com/GPT012)
+
+### Tests
+
+Run `npm test` to test translation-response parsing and caching in the background service worker with a stubbed API response. The `tests/e2e_*.spec.js` files are headed-browser simulations that log results but do not assert translation outcomes; they are not included in `npm test`.

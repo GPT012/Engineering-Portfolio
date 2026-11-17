@@ -1,39 +1,31 @@
-# CoefRessources | Enterprise-Grade CMS & Prestige Portfolio 🏛️
+# CoefRessources | CMS & Portfolio
 
 [![Deployment](https://img.shields.io/badge/Status-Live-success?style=flat-square)](https://coef-modern.vercel.app)
-[![Tech](https://img.shields.io/badge/Architecture-Next.js_15-000000?style=flat-square&logo=next.js)](https://nextjs.org)
+[![Tech](https://img.shields.io/badge/Architecture-Next.js_16-000000?style=flat-square&logo=next.js)](https://nextjs.org)
 [![Database](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
-[![Security](https://img.shields.io/badge/Security-RLS_Lockdown-blue?style=flat-square)](https://postgresql.org)
 
-> **Un écosystème digital complet conçu pour un cabinet de conseil leader à Madagascar. Alliant esthétique prestige, gestion de contenu autonome et sécurité industrielle.**
+> Application de gestion de contenu, de galerie et de prospects pour un cabinet de conseil à Madagascar.
 
 ---
 
 ## 🎨 L'Essence du Projet
-Ce projet n'est pas qu'un site vitrine, c'est une plateforme de gestion stratégique. L'objectif était de rendre une équipe non-technique totalement autonome dans la gestion de ses actualités, de son portfolio terrain et de ses prospects (leads).
+L'application permet à l'équipe de gérer ses actualités, sa galerie et ses prospects depuis une interface d'administration.
 
 ### ✨ Caractéristiques Majeures
 
-- **UI Haute-Couture** : Design "Journal" utilisant les codes du luxe et du prestige (Framer Motion, Glassmorphism, Typographies Playfair Display).
-- **CMS Dynamique & Intuitif** : Gestionnaire d'articles et de galerie photos via une interface d'administration simplifiée.
-- **Micro-CRM Intégré** : Système de capture de leads (projets) avec dashboard de suivi en temps réel.
-- **Performance de Pointe** : Optimisation des images (Next/Image) et chargement hybride (SSR/ISR).
+- **Interface d'administration** : Gestion des articles et de la galerie photos.
+- **Suivi des prospects** : Formulaire de prise de contact et tableau de suivi.
+- **Interface** : Mise en page éditoriale, animations Framer Motion et typographies Playfair Display.
 
----
+## Authentification
 
-## 🛡️ Architecture & Sécurité (Expert-Level)
-
-La sécurité a été au cœur de la conception, avec une approche **Zero Trust** sur les mutations de données.
-
-- **Supabase Auth** : Authentification robuste par Email/Mot de passe pour l'administration.
-- **Row Level Security (RLS)** : Politiques Postgres granulaires. Personne (même avec l'URL API) ne peut modifier le contenu sans être authentifié.
-- **Sanitisation & Validation** : Validation de type stricte via TypeScript sur l'ensemble du flux de données.
+Le projet utilise Supabase Auth pour l'accès à l'administration. Ce README ne constitue pas un audit de sécurité.
 
 ---
 
 ## 🚀 Stack Technique
 
-- **Frontend** : Next.js 15 (App Router), React 19, Tailwind CSS.
+- **Frontend** : Next.js 16 (App Router), React 19, Tailwind CSS.
 - **Animations** : Framer Motion (Parallaxe, Stagger effects).
 - **Backend-as-a-Service** : Supabase (PostgreSQL, Storage, Auth).
 - **Icons** : Lucide React.
@@ -64,5 +56,4 @@ Propriété de CoefRessources. Tous droits réservés.
 
 ---
 
-### Architecturé par [0xbaw](https://github.com/0xbaw)
-*Spécialiste Next.js & Solutions Backend-as-a-Service.*
+### Built by [GPT012](https://github.com/GPT012)
