@@ -1,26 +1,24 @@
-# Chess Animations | Intelligent Move Evaluation ♟️🎨
+# Chess Animations | Chess Move Analysis ♟️🎨
 
-> **A High-Performance Browser Extension for Real-Time Pedagogical Feedback on Chess.com.**
+> A Chrome extension project for chess move analysis and visual feedback on Chess.com.
 
-Chess Animations is a cutting-edge Chrome extension designed to elevate the online chess experience. By integrating advanced **Stockfish NNUE** evaluation engines with a sophisticated UI, it provides players with instant, high-quality analysis of their moves, categorizing them with meaningful pedagogical feedback.
+Chess Animations combines move evaluation with visual indicators that categorize moves for review.
 
 ---
 
 ### 🚀 Key Features
 
-- **Real-Time Analysis** : Evaluates every move instantly using the latest **Stockfish** engine.
-- **Pedagogical Classification** : Moves are intelligently categorized (Brilliant, Great, Inaccuracy, Mistake, Blunder) to help players understand their performance.
-- **Dynamic Centipawn Loss Calculation** : Highly precise evaluation feedback for every position.
-- **Visual Feedback System** : Clean, non-distracting animations and indicators that enhance the default Chess.com experience.
-- **Cloud API Integration** : Leverages **Lichess Cloud API** and polyglot opening books for lightning-fast analysis in any game phase.
+- **Move analysis**: Uses a local Stockfish NNUE engine and the Lichess Cloud API.
+- **Move categories**: Displays labels such as Brilliant, Great, Inaccuracy, Mistake, and Blunder.
+- **Visual feedback**: Adds animations and indicators to the Chess.com board.
 
 ---
 
 ### 🛡️ Technical Implementation
 
 - **Platform** : Chrome Browser Extension (Manifest V3).
-- **Engine** : Local Stockfish NNUE + Cloud API fallback.
-- **Architecture** : Async worker-driven analysis to maintain board responsiveness and high-precision evaluation.
+- **Engine**: Local Stockfish NNUE with Lichess Cloud API fallback.
+- **Architecture**: Uses asynchronous workers for analysis.
 
 ---
 
@@ -37,5 +35,4 @@ Designed for both casual players and serious students of the game, Chess Animati
 
 ---
 
-### Developed by [0xbaw](https://github.com/0xbaw)
-*High-End Browser Extension Architect & Logic Expert.*
+### Built by [GPT012](https://github.com/GPT012)

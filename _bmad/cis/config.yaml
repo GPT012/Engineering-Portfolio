@@ -6,7 +6,7 @@
 visual_tools: []
 
 # Core Configuration Values
-user_name: 0xbaw
+user_name: GPT012
 communication_language: french
 document_output_language: french
 output_folder: "{project-root}/_bmad-output"

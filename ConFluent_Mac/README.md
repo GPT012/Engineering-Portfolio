@@ -1,31 +1,31 @@
-# ConFluent Mac | Desktop AI Companion 🎙️🌍
+# ConFluent Mac | Desktop App 🎙️🌍
 
-> **Instant Voice-to-Clipboard Transcription & Real-Time Translation.**
+> Voice input, transcription, and translation from a macOS desktop app.
 
-ConFluent Mac is a state-of-the-art desktop utility designed to eliminate communication barriers. Built with **Electron** and high-performance native modules, it allows users to dictate, translate, and paste text across any application with zero friction.
+ConFluent Mac is an Electron desktop app for dictation, translation, and inserting text into the active application.
 
 ---
 
 ### 🚀 Key Features
 
-- **Global Key Listening** : Trigger transcription or translation from anywhere in the OS via custom shortcuts.
-- **Micro-to-Clipboard Engine** : Advanced speech recognition that captures, processes, and inserts text directly into your active window.
-- **Instant Overlay** : A minimalist, non-intrusive UI that provides visual feedback and translation status over other apps.
-- **Custom Translation Workflows** : Integration with premium translation APIs for real-time multilingual support.
+- **Global shortcuts**: Trigger transcription or translation using configured keyboard shortcuts.
+- **Dictation workflow**: Capture speech and insert the resulting text into the active window.
+- **Overlay**: Displays transcription and translation status.
+- **Translation**: Connects to the translation service configured by the app.
 
 ---
 
 ### 🛡️ Technical Architecture
 
 - **Core** : `Electron 33`, `V8 Engine`.
-- **System Integration** : `node-global-key-listener` for low-latency global hotkeys.
-- **Persistence** : `electron-store` for secure configuration management.
+- **System integration**: `node-global-key-listener` for global keyboard shortcuts.
+- **Persistence**: `electron-store` for application settings.
 - **UI/UX** : Multi-window architecture with transparent overlays and frameless windows.
 
 ---
 
 ### 🎨 Design & Accessibility
-ConFluent is built with a **"Productivity First"** philosophy. The interface is designed to be invisible when not needed, providing a "Ghost UI" experience that responds instantly to user input.
+The interface uses overlays to show status while keeping the main workflow in the active application.
 
 ---
 
@@ -45,10 +45,8 @@ npm run build
 ---
 
 ### 🔐 Security & Permissions
-- **Hardened Runtime** : Fully compliant with macOS security standards.
-- **Privacy** : All dictation and translation requests are handled via secure, encrypted channels.
+- The macOS packaging configuration enables Electron's `hardenedRuntime` option. This setting alone does not establish that the application has been security-audited.
 
 ---
 
-### Developed by [0xbaw](https://github.com/0xbaw)
-*High-End Desktop & Web Architect.*
+### Built by [GPT012](https://github.com/GPT012)
